@@ -278,6 +278,91 @@
             background: linear-gradient(90deg, #00173d, #0052cc 50%, #eab308) !important;
             height: 2px !important;
         }
+        /* ====== Mode Tabs ====== */
+        .mode-tab {
+            padding: 8px 20px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            border: 2px solid transparent;
+            background: #f1f5f9;
+            color: #64748b;
+        }
+        .mode-tab:hover {
+            background: #e2e8f0;
+            color: #334155;
+        }
+        .mode-tab.active {
+            background: var(--primary, #f37021);
+            color: #ffffff;
+            border-color: var(--primary, #f37021);
+            box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+        }
+
+        /* ====== High-Precision ID Card Canvas ====== */
+        .id-card-wrapper {
+            width: 340px;
+            aspect-ratio: 640 / 1010;
+            position: relative;
+            border-radius: 28px;
+            border: 8px solid #0f172a;
+            overflow: hidden;
+            background: #f8fafc;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.45), 0 0 2px rgba(255,255,255,0.2);
+            font-family: 'Inter', sans-serif;
+            user-select: none;
+        }
+
+        .id-card-bg-layer {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .id-photo-upload {
+            border: 2px dashed #cbd5e1;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            background: #f8fafc;
+        }
+        .id-photo-upload:hover {
+            border-color: var(--primary, #f37021);
+            background: #fff7ed;
+        }
+        .id-photo-upload.has-photo {
+            padding: 8px;
+            border-style: solid;
+            border-color: var(--primary, #f37021);
+            background: #fff7ed;
+        }
+
+        /* Scanner / Camera overlay */
+        .camera-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.85);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .camera-overlay video {
+            max-width: 90%;
+            max-height: 60vh;
+            border-radius: 12px;
+            border: 3px solid #fff;
+        }
+        .camera-overlay canvas { display: none; }
     </style>
 </head>
 
@@ -314,7 +399,20 @@
         </div>
     </header>
 
-    <main class="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-6 lg:p-8 grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-8">
+    <main class="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-6 lg:p-8">
+
+        <!-- Mode Switcher Tabs -->
+        <div class="flex items-center justify-center gap-3 mb-6">
+            <button class="mode-tab active" id="tabSignature" onclick="switchMode('signature')">
+                <i class="fa-solid fa-envelope mr-1"></i> Email Signature
+            </button>
+            <button class="mode-tab" id="tabIdCard" onclick="switchMode('idcard')">
+                <i class="fa-solid fa-id-card-clip mr-1"></i> ID Card Generator
+            </button>
+        </div>
+
+    <!-- ===== SIGNATURE MODE ===== -->
+    <div id="signatureMode" class="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-8">
 
         <!-- Sidebar Input Controls -->
         <div class="lg:col-span-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col gap-6 h-fit">
@@ -331,6 +429,7 @@
                     class="text-xs brand-primary font-semibold hover:underline">Reset</button>
             </div>
 
+            <!-- Form Fields -->
             <div class="grid gap-4 sm:grid-cols-2">
                 <div>
                     <label for="companySelector" class="block text-xs font-semibold text-slate-700 mb-1">Choose
@@ -371,39 +470,41 @@
                 </div>
 
                 <!-- Contact Info -->
-                <div>
-                    <label for="inputEmail" class="block text-xs font-semibold text-slate-700 mb-1">Email
-                        Address</label>
-                    <input type="email" id="inputEmail" value="info@goliveclasses.co" oninput="updatePreview()"
-                        class="w-full text-sm px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0A3D7A] focus:border-transparent">
-                </div>
+                <div class="space-y-4">
+                    <div>
+                        <label for="inputEmail" class="block text-xs font-semibold text-slate-700 mb-1">Email
+                            Address</label>
+                        <input type="email" id="inputEmail" value="info@goliveclasses.co" oninput="updatePreview()"
+                            class="w-full text-sm px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0A3D7A] focus:border-transparent">
+                    </div>
 
-                <div>
-                    <label for="inputPhone" class="block text-xs font-semibold text-slate-700 mb-1">Phone Number</label>
-                    <input type="text" id="inputPhone" value="+91 9398355196" oninput="updatePreview()"
-                        class="w-full text-sm px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0A3D7A] focus:border-transparent">
-                </div>
+                    <div>
+                        <label for="inputPhone" class="block text-xs font-semibold text-slate-700 mb-1">Phone Number</label>
+                        <input type="text" id="inputPhone" value="+91 9398355196" oninput="updatePreview()"
+                            class="w-full text-sm px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0A3D7A] focus:border-transparent">
+                    </div>
 
-                <div>
-                    <label for="inputWebsite" class="block text-xs font-semibold text-slate-700 mb-1">Website
-                        URL</label>
-                    <input type="text" id="inputWebsite" value="www.goliveclasses.co" oninput="updatePreview()"
-                        class="w-full text-sm px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0A3D7A] focus:border-transparent">
-                </div>
+                    <div>
+                        <label for="inputWebsite" class="block text-xs font-semibold text-slate-700 mb-1">Website
+                            URL</label>
+                        <input type="text" id="inputWebsite" value="www.goliveclasses.co" oninput="updatePreview()"
+                            class="w-full text-sm px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0A3D7A] focus:border-transparent">
+                    </div>
 
-                <div>
-                    <label for="inputAddress" class="block text-xs font-semibold text-slate-700 mb-1">Office
-                        Address</label>
-                    <textarea id="inputAddress" rows="2" oninput="updatePreview()"
-                        class="w-full text-sm px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0A3D7A] focus:border-transparent resize-none">Plot No:41, Survey No:331, Bachupally, Hyderabad, India-500090</textarea>
-                </div>
+                    <div>
+                        <label for="inputAddress" class="block text-xs font-semibold text-slate-700 mb-1">Office
+                            Address</label>
+                        <textarea id="inputAddress" rows="2" oninput="updatePreview()"
+                            class="w-full text-sm px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0A3D7A] focus:border-transparent resize-none">Plot No:41, Survey No:331, Bachupally, Hyderabad, India-500090</textarea>
+                    </div>
 
-                <!-- Tagline & Slogan -->
-                <div>
-                    <label for="inputSlogan" class="block text-xs font-semibold text-slate-700 mb-1">Company
-                        Slogan</label>
-                    <input type="text" id="inputSlogan" value="Learn Fast. Succeed Faster." oninput="updatePreview()"
-                        class="w-full text-sm px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0A3D7A] focus:border-transparent">
+                    <!-- Tagline & Slogan -->
+                    <div>
+                        <label for="inputSlogan" class="block text-xs font-semibold text-slate-700 mb-1">Company
+                            Slogan</label>
+                        <input type="text" id="inputSlogan" value="Learn Fast. Succeed Faster." oninput="updatePreview()"
+                            class="w-full text-sm px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0A3D7A] focus:border-transparent">
+                    </div>
                 </div>
             </div>
 
@@ -629,6 +730,316 @@
             </div>
 
         </div>
+    </div><!-- /signatureMode -->
+
+    <!-- ===== ID CARD MODE ===== -->
+    <div id="idCardMode" style="display:none;" class="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-8">
+
+        <!-- ID Card Form Sidebar -->
+        <div class="lg:col-span-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col gap-5 h-fit">
+            <div class="border-b border-slate-100 pb-3">
+                <h2 class="font-brand font-bold text-slate-900 text-base flex items-center gap-2">
+                    <i class="fa-solid fa-id-card-clip brand-primary"></i> ID Card Fields
+                </h2>
+                <p class="text-xs text-slate-500 mt-0.5">Fill details and upload a photo. Preview updates live.</p>
+            </div>
+
+            <!-- Company Logo Upload -->
+            <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-2">Company Logo</label>
+                <div id="idLogoUpload" class="id-photo-upload" onclick="document.getElementById('idLogoInput').click()">
+                    <input type="file" id="idLogoInput" accept="image/*" style="display:none;" onchange="handleIdLogo(event)">
+                    <div id="idLogoPlaceholder">
+                        <i class="fa-solid fa-image text-2xl text-slate-300 mb-1"></i>
+                        <p class="text-xs text-slate-500 font-medium">Click to upload logo</p>
+                    </div>
+                    <img id="idLogoPreview" style="display:none;max-height:80px;max-width:100%;border-radius:8px;object-fit:contain;" alt="Logo Preview">
+                </div>
+            </div>
+
+            <!-- Photo Upload -->
+            <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-2">Employee Photo</label>
+                <div id="idPhotoUpload" class="id-photo-upload" onclick="document.getElementById('idPhotoInput').click()">
+                    <input type="file" id="idPhotoInput" accept="image/*" style="display:none;" onchange="handleIdPhoto(event)">
+                    <div id="idPhotoPlaceholder">
+                        <i class="fa-solid fa-cloud-arrow-up text-3xl text-slate-300 mb-2"></i>
+                        <p class="text-xs text-slate-500 font-medium">Click to upload photo</p>
+                        <p class="text-[10px] text-slate-400 mt-1">or use camera below</p>
+                    </div>
+                    <img id="idPhotoPreview" style="display:none;max-height:120px;border-radius:8px;" alt="Preview">
+                </div>
+                <div class="flex gap-2 mt-2">
+                    <button onclick="openCamera()" class="flex-1 text-xs font-semibold px-3 py-2 rounded-lg border border-slate-300 bg-slate-50 hover:bg-slate-100 text-slate-700 transition-colors">
+                        <i class="fa-solid fa-camera mr-1"></i> Camera
+                    </button>
+                    <button onclick="clearIdPhoto()" class="flex-1 text-xs font-semibold px-3 py-2 rounded-lg border border-red-200 bg-red-50 hover:bg-red-100 text-red-600 transition-colors">
+                        <i class="fa-solid fa-xmark mr-1"></i> Remove
+                    </button>
+                </div>
+            </div>
+
+            <!-- QR / Scanner Upload -->
+            <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-2">QR / Scanner Code</label>
+                <label class="flex items-center gap-2 text-xs font-semibold bg-white border border-slate-300 rounded-lg py-2.5 px-3 hover:bg-slate-50 transition-colors cursor-pointer">
+                    <i class="fa-solid fa-upload text-slate-400"></i> <span>Choose QR Image (manual)</span>
+                    <input type="file" accept="image/*" class="hidden" onchange="handleQrUpload(event)">
+                </label>
+                <p class="text-[10px] text-slate-400 mt-1">Upload any QR code image you already generated.</p>
+            </div>
+
+            <!-- Footer Tagline -->
+            <div>
+                <label for="inputIdTagline" class="block text-xs font-semibold text-slate-700 mb-1">Footer Tagline</label>
+                <input type="text" id="inputIdTagline" value="INNOVATE | AUTOMATE | TRANSFORM" oninput="updateIdCardPreview()"
+                    class="w-full text-sm px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0A3D7A] bg-white">
+            </div>
+
+            <!-- Employee Details -->
+            <div class="space-y-3 bg-accent p-3.5 rounded-xl border border-slate-200">
+                <span class="text-xs font-bold brand-primary uppercase tracking-wider block">Employee Details</span>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Full Name</label>
+                    <input type="text" id="idNameInput" value="Uday Kumar C" oninput="updateIdCardPreview()"
+                        class="w-full text-sm px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0A3D7A] bg-white">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Designation</label>
+                    <input type="text" id="idDesignationInput" value="Managing Director & CEO" oninput="updateIdCardPreview()"
+                        class="w-full text-sm px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0A3D7A] bg-white">
+                </div>
+            </div>
+
+            <!-- Export Buttons -->
+            <div class="flex gap-2 pt-2 border-t border-slate-100">
+                <button onclick="downloadIdCardPNG()" class="flex-1 px-4 py-2.5 button-primary font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-md flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-download"></i> Export ID Card PNG
+                </button>
+            </div>
+        </div>
+
+        <!-- ID Card Preview Area -->
+        <div class="lg:col-span-8 flex flex-col gap-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-800">
+                        <span class="w-1.5 h-1.5 mr-1.5 rounded-full bg-blue-500 animate-pulse"></span> Live Preview
+                    </span>
+                    <span id="idActiveBrandLabel" class="text-xs text-slate-500 hidden sm:inline">OneBridge Employee ID Card</span>
+                </div>
+                <div class="text-xs text-slate-400 font-mono hidden sm:block">Portrait ID Card</div>
+            </div>
+
+            <!-- ID Card Preview -->
+            <div class="flex items-center justify-center p-6 sm:p-10" style="background:linear-gradient(135deg,#f8fafc,#e2e8f0);border-radius:16px;min-height:580px;">
+                    <div id="idCardPreview" class="id-card-wrapper" style="--idc-primary:#f37021; --idc-dark:#111827;">
+
+                        <!-- SVG Layer: Side Ribbons, Charcoal Wings, Skyline Vector & Orange Border Contour -->
+                        <svg class="id-card-bg-layer" viewBox="0 0 640 1010" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <pattern id="dotPattern" x="0" y="0" width="22" height="22" patternUnits="userSpaceOnUse">
+                                    <circle cx="6" cy="6" r="2.8" fill="var(--idc-primary)" opacity="0.75" />
+                                </pattern>
+                                <linearGradient id="skylineFade" x1="0" y1="1" x2="0" y2="0">
+                                    <stop offset="0%" stop-color="#ffffff" stop-opacity="0.22" />
+                                    <stop offset="100%" stop-color="#ffffff" stop-opacity="0.03" />
+                                </linearGradient>
+                            </defs>
+                            <rect x="0" y="0" width="640" height="1010" fill="#f8fafc" />
+                            <rect x="15" y="20" width="160" height="140" fill="url(#dotPattern)" />
+                            <g fill="none" stroke="var(--idc-primary)" stroke-width="2" opacity="0.20">
+                                <circle cx="720" cy="-40" r="260" />
+                                <circle cx="720" cy="-40" r="200" />
+                                <circle cx="720" cy="-40" r="140" />
+                                <circle cx="720" cy="-40" r="80" />
+                            </g>
+                            <path d="M 0,280 L 115,370 L 115,640 L 220,830 L 220,950 L 0,950 Z" fill="var(--idc-dark)" />
+                            <path d="M 640,280 L 525,370 L 525,640 L 420,830 L 420,950 L 640,950 Z" fill="var(--idc-dark)" />
+                            <g stroke="url(#skylineFade)" stroke-width="2" fill="none">
+                                <path d="M 15,950 V 710 H 35 V 950 M 40,950 V 680 H 65 V 950 M 70,950 V 740 H 90 V 950 M 95,950 V 780 H 115 V 950" />
+                                <path d="M 20,720 H 30 M 20,740 H 30 M 20,760 H 30 M 45,695 H 60 M 45,715 H 60 M 45,735 H 60 M 45,755 H 60" />
+                                <path d="M 525,950 V 780 H 545 V 950 M 550,950 V 680 H 575 V 950 M 580,950 V 710 H 600 V 950 M 605,950 V 740 H 625 V 950" />
+                                <path d="M 555,695 H 570 M 555,715 H 570 M 555,735 H 570 M 585,720 H 595 M 585,740 H 595" />
+                            </g>
+                            <path d="M 0,280 L 115,370 L 92,430 L 0,350 Z" fill="var(--idc-primary)" />
+                            <path d="M 0,350 L 92,430 L 0,660 Z" fill="var(--idc-primary)" opacity="0.85" />
+                            <path d="M 640,280 L 525,370 L 548,430 L 640,350 Z" fill="var(--idc-primary)" />
+                            <path d="M 640,350 L 548,430 L 640,660 Z" fill="var(--idc-primary)" opacity="0.85" />
+                            <path d="M 0,280 L 115,370 L 115,640 L 220,830 L 220,950 L 420,950 L 420,830 L 525,640 L 525,370 L 640,280" fill="none" stroke="var(--idc-primary)" stroke-width="22" stroke-linejoin="round" stroke-linecap="round" />
+                            <rect x="0" y="942" width="640" height="68" fill="var(--idc-primary)" />
+                        </svg>
+
+                        <!-- Lanyard Slot -->
+                        <div style="position:absolute; top:18px; left:50%; transform:translateX(-50%); width:84px; height:15px; background:#94a3b8; border-radius:10px; z-index:10; box-shadow:inset 0 2px 4px rgba(0,0,0,0.4);"></div>
+
+                        <!-- Main Content Column -->
+                        <div style="
+position:relative;
+z-index:5;
+display:flex;
+flex-direction:column;
+align-items:center;
+text-align:center;
+padding:30px 18px 0;
+height:calc(100% - 60px);
+box-sizing:border-box;
+">
+                            <div id="idLogoWrap"
+    style="
+        height:140px;
+        width:260px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        margin:8px auto 10px;
+        background:#ffffff;
+        border-radius:18px;
+        position:relative;
+        z-index:20;
+    ">
+</div>
+                            <div id="idBrandName" class="font-brand" style="font-weight:800; font-size:22px; letter-spacing:-0.02em; white-space:nowrap; margin-bottom:14px;">
+                                <span style="color:var(--idc-primary);">Onebridge</span> <span style="color:#111827;">Infotech</span>
+                            </div>
+                            <div style="
+    width:120px;
+    height:120px;
+    margin:20px auto;
+    padding:8px;
+    border:8px solid var(--idc-primary);
+    border-radius:50%;
+    background:#ffffff;
+    position:relative;
+    overflow:hidden;
+    flex-shrink:0;
+    box-shadow:0 12px 30px rgba(0,0,0,.20);
+">
+
+   <img id="idPhotoImg"
+     style="
+        position:absolute;
+        top:6px;
+        left:6px;
+        width:calc(100% - 12px);
+        height:calc(100% - 12px);
+        border-radius:50%;
+        object-fit:cover;
+        object-position:center top;
+        display:none;
+        z-index:2;
+     "
+     alt="ID Photo">
+
+    <div id="idPhotoPlaceholderCard"
+        style="
+            position:absolute;
+            top:8px;
+            left:8px;
+            width:calc(100% - 16px);
+            height:calc(100% - 16px);
+            border-radius:50%;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            background:#f8fafc;
+            z-index:1;
+        ">
+        <i class="fa-solid fa-user"
+           style="font-size:72px;color:#cbd5e1;"></i>
+    </div>
+
+</div>
+                            <h3 id="idName" class="font-brand" style="margin-top:8px; font-weight:800; font-size:15px; line-height:1.1;margin-bottom: 4px; text-align:center; padding:0 12px; color:#0f172a;">Uday Kumar C</h3>
+                            <div style="width:42px; height:4px; border-radius:3px; background:var(--idc-primary); margin:8px 0 6px 0;"></div>
+                           <p id="idDesignation"
+style="
+    font-size:9px;
+    font-weight:600;
+    color:#334155;
+    line-height:1.2;
+    text-align:center;
+    max-width:250px;
+    margin:2px auto 10px;
+    word-wrap:break-word;
+">
+    Managing Director &amp; CEO
+</p>
+                           <!-- QR Code -->
+<div style="
+margin-top:16px;
+display:flex;
+justify-content:center;
+align-items:center;
+position:relative;
+z-index:20;
+flex-shrink:0;
+">
+
+    <div style="
+    width:96px;
+    height:96px;
+    padding:8px;
+    background:#fff;
+    border-radius:18px;
+    border:1px solid #d1d5db;
+    box-shadow:0 10px 20px rgba(0,0,0,.15);
+    ">
+
+        <img id="idQrImg"
+             style="width:100%;height:100%;object-fit:contain;display:none;"
+             alt="QR Code">
+
+        <i id="idQrPlaceholderCard"
+           class="fa-solid fa-qrcode text-slate-300"
+           style="font-size:48px;line-height:80px;width:100%;text-align:center;"></i>
+
+    </div>
+
+</div>
+
+<!-- Footer -->
+<div style="
+    position:absolute;
+    left:0;
+    right:0;
+    bottom:0;
+    height:46px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:30;
+">
+    <span id="idTagline"
+          style="
+            color:#ffffff;
+            font-size:11px;
+            font-weight:800;
+            letter-spacing:.14em;
+            text-transform:uppercase;
+            white-space:nowrap;
+          ">
+        INNOVATE &nbsp; | &nbsp; AUTOMATE &nbsp; | &nbsp; TRANSFORM
+    </span>
+</div>
+
+            <!-- Info Banner -->
+            <div class="bg-slate-900 text-white p-4 sm:p-5 rounded-2xl flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+                <div class="space-y-0.5 text-center sm:text-left">
+                    <h4 class="font-brand font-bold text-sm flex items-center justify-center sm:justify-start gap-2">
+                        <i class="fa-solid fa-id-card brand-primary"></i> Corporate ID Card Generator
+                    </h4>
+                    <p class="text-xs text-slate-400 hidden sm:block">Upload employee photo, fill details, and export as high-res PNG. Switch companies using the dropdown above.</p>
+                </div>
+                <div class="flex items-center justify-center gap-2 shrink-0">
+                    <button onclick="downloadIdCardPNG()" class="flex-1 sm:flex-none px-4 sm:px-5 py-2.5 button-primary font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-md flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-download text-sm"></i> Export PNG
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div><!-- /idCardMode -->
 
     </main>
 
@@ -651,9 +1062,13 @@
                 accentBg: '#FFF3EB',
                 buttonHover: '#ea580c',
                 filePrefix: 'OneBridge',
-                logoHeight: 120,
+                logoHeight:200,
                 headerTitle: 'OneBridge Template Generator',
-                headerSubtitle: 'Live Editor • DOCX Exporter • HTML Signature'
+                headerSubtitle: 'Live Editor \u2022 DOCX Exporter \u2022 HTML Signature',
+                idcardDark: '#111827',
+                idTaglineDefault: 'INNOVATE   |   AUTOMATE   |   TRANSFORM',
+                idBrandHTML: '<span style="color:var(--idc-primary);">Onebridge</span> <span style="color:#111827;">Infotech</span>',
+                idLogoSVG: '<svg width="90" height="70" viewBox="0 0 120 96" xmlns="http://www.w3.org/2000/svg"><path d="M6,74 Q32,20 58,74 Z" fill="#f37021"/><path d="M40,74 Q66,32 94,74 Z" fill="#111827"/><circle cx="95" cy="20" r="10" fill="#f37021"/><text x="107" y="14" font-size="9" font-family="Arial" fill="#111827" font-weight="700">\u00AE</text></svg>'
             },
             golive: {
                 label: 'GoLive Classes',
@@ -674,11 +1089,17 @@
                 filePrefix: 'GoLiveClasses',
                 logoHeight: 150,
                 headerTitle: 'GoLive Classes Signature Generator',
-                headerSubtitle: 'Premium Corporate Email Signature • Live Editor • Export'
+                headerSubtitle: 'Premium Corporate Email Signature \u2022 Live Editor \u2022 Export',
+                idcardDark: '#00173d',
+                idTaglineDefault: 'LEARN   |   PRACTICE   |   SUCCEED',
+                idBrandHTML: '<span style="color:#0A3D7A;">GoLive</span> <span style="color:#d97706;">Classes</span>',
+                idLogoSVG: '<svg width="70" height="70" viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg"><circle cx="48" cy="48" r="44" fill="none" stroke="#0A3D7A" stroke-width="4"/><text x="48" y="58" font-size="30" font-family="Outfit, Arial" font-weight="800" fill="#0A3D7A" text-anchor="middle">GL</text><circle cx="80" cy="20" r="7" fill="#eab308"/></svg>'
             }
         };
 
         let selectedCompany = 'golive';
+        let idPhotoDataUrl = null;
+        let cameraStream = null;
 
         function applyTheme(config) {
             document.documentElement.style.setProperty('--primary', config.primaryColor);
@@ -695,101 +1116,98 @@
             document.getElementById('companyNameTitle').innerText = config.label;
             document.getElementById('companySelector').value = companyId;
 
-            // Show only the correct brand card
             document.getElementById('onebridgeCard').style.display = (companyId === 'onebridge') ? 'block' : 'none';
-            document.getElementById('goliveCard').style.display   = (companyId === 'golive')     ? 'block' : 'none';
+            document.getElementById('goliveCard').style.display = (companyId === 'golive') ? 'block' : 'none';
 
-            // Update header title & subtitle
             document.getElementById('headerTitle').innerText = config.headerTitle;
             document.getElementById('headerSubtitle').innerText = config.headerSubtitle;
-
-            // Update active brand label
             document.getElementById('activeBrandLabel').innerText = config.label + ' Signature';
 
-            // Sidebar thumbnails
             document.getElementById('thumbLogo').src = config.logo;
-            document.getElementById('thumbQr').src   = config.qr;
+            document.getElementById('thumbQr').src = config.qr;
 
-            // Reset form to selected company defaults
-            document.getElementById('inputSlogan').value  = config.sloganDefault;
+            document.getElementById('inputSlogan').value = config.sloganDefault;
             document.getElementById('inputWebsite').value = config.websiteDefault;
-            document.getElementById('inputEmail').value   = config.emailDefault;
-            document.getElementById('inputPhone').value   = config.phoneDefault;
+            document.getElementById('inputEmail').value = config.emailDefault;
+            document.getElementById('inputPhone').value = config.phoneDefault;
             document.getElementById('inputAddress').value = config.addressDefault;
 
+            document.getElementById('idCardPreview').style.setProperty('--idc-primary', config.primaryColor);
+            document.getElementById('idCardPreview').style.setProperty('--idc-dark', config.idcardDark);
+            document.getElementById('idLogoWrap').innerHTML = config.idLogoSVG;
+            document.getElementById('idBrandName').innerHTML = config.idBrandHTML;
+            document.getElementById('inputIdTagline').value = config.idTaglineDefault;
+            document.getElementById('idActiveBrandLabel').innerText = config.label + ' Employee ID Card';
+
             updatePreview();
+            updateIdCardPreview();
         }
 
-        window.addEventListener('DOMContentLoaded', () => {
+        window.addEventListener('DOMContentLoaded', function() {
             setCompany('golive');
         });
 
-        // Updates ONLY the currently visible brand card
         function updatePreview() {
             const config = COMPANY_CONFIG[selectedCompany];
-            const name        = document.getElementById('inputName').value        || 'Avala Vinay';
+            const name = document.getElementById('inputName').value || 'Avala Vinay';
             const designation = document.getElementById('inputDesignation').value || 'Full Stack Developer';
-            const email       = document.getElementById('inputEmail').value       || config.emailDefault;
-            const phone       = document.getElementById('inputPhone').value       || config.phoneDefault;
-            const website     = document.getElementById('inputWebsite').value     || config.websiteDefault;
-            const address     = document.getElementById('inputAddress').value     || config.addressDefault;
-            const slogan      = document.getElementById('inputSlogan').value      || config.sloganDefault;
+            const email = document.getElementById('inputEmail').value || config.emailDefault;
+            const phone = document.getElementById('inputPhone').value || config.phoneDefault;
+            const website = document.getElementById('inputWebsite').value || config.websiteDefault;
+            const address = document.getElementById('inputAddress').value || config.addressDefault;
+            const slogan = document.getElementById('inputSlogan').value || config.sloganDefault;
 
             const p = (selectedCompany === 'golive') ? 'gl' : 'ob';
-
-            document.getElementById(p + 'Name').innerText        = name;
+            document.getElementById(p + 'Name').innerText = name;
             document.getElementById(p + 'Designation').innerText = designation;
-            document.getElementById(p + 'Email').innerText       = email;
-            document.getElementById(p + 'Phone').innerText       = phone;
-            document.getElementById(p + 'Website').innerText     = website;
-            document.getElementById(p + 'Address').innerText     = address;
+            document.getElementById(p + 'Email').innerText = email;
+            document.getElementById(p + 'Phone').innerText = phone;
+            document.getElementById(p + 'Website').innerText = website;
+            document.getElementById(p + 'Address').innerText = address;
 
-            // Slogan with styled second part
             const parts = slogan.split('.');
             const sloganEl = document.getElementById(p + 'Slogan');
             if (parts.length >= 2) {
-                sloganEl.innerHTML = `${parts[0]}. <span style="font-weight:700;color:${selectedCompany === 'golive' ? '#facc15' : config.primaryColor}">${parts.slice(1).join('.')}</span>`;
+                sloganEl.innerHTML = parts[0] + '. <span style="font-weight:700;color:' + (selectedCompany === 'golive' ? '#facc15' : config.primaryColor) + '">' + parts.slice(1).join('.') + '</span>';
             } else {
                 sloganEl.innerText = slogan;
             }
         }
 
-        // Reset inputs to selected company defaults
         function resetDefaults() {
             const config = COMPANY_CONFIG[selectedCompany];
-            document.getElementById('inputName').value        = 'Avala Vinay';
+            document.getElementById('inputName').value = 'Avala Vinay';
             document.getElementById('inputDesignation').value = 'Full Stack Developer';
-            document.getElementById('inputEmail').value       = config.emailDefault;
-            document.getElementById('inputPhone').value       = config.phoneDefault;
-            document.getElementById('inputWebsite').value     = config.websiteDefault;
-            document.getElementById('inputAddress').value     = config.addressDefault;
-            document.getElementById('inputSlogan').value      = config.sloganDefault;
+            document.getElementById('inputEmail').value = config.emailDefault;
+            document.getElementById('inputPhone').value = config.phoneDefault;
+            document.getElementById('inputWebsite').value = config.websiteDefault;
+            document.getElementById('inputAddress').value = config.addressDefault;
+            document.getElementById('inputSlogan').value = config.sloganDefault;
             updatePreview();
             showToast('Form fields reset to defaults.');
         }
 
-        // Toast notification helper
-        function showToast(msg, isSuccess = true) {
-            const toast    = document.getElementById('toast');
-            const toastMsg = document.getElementById('toastMessage');
-            const toastIcon = document.getElementById('toastIcon');
+        function showToast(msg, isSuccess) {
+            if (isSuccess === undefined) isSuccess = true;
+            var toast = document.getElementById('toast');
+            var toastMsg = document.getElementById('toastMessage');
+            var toastIcon = document.getElementById('toastIcon');
             toastMsg.innerText = msg;
             toastIcon.className = isSuccess
                 ? "fa-solid fa-check-circle text-emerald-400 text-base"
                 : "fa-solid fa-triangle-exclamation text-amber-400 text-base";
             toast.classList.remove('translate-y-20', 'opacity-0');
             toast.classList.add('translate-y-0', 'opacity-100');
-            setTimeout(() => {
+            setTimeout(function() {
                 toast.classList.remove('translate-y-0', 'opacity-100');
                 toast.classList.add('translate-y-20', 'opacity-0');
             }, 3200);
         }
 
-        // Copy HTML — copies ONLY the active brand card
         function copySignatureHTML() {
-            const cardId = (selectedCompany === 'golive') ? 'goliveCard' : 'onebridgeCard';
-            const card = document.getElementById(cardId);
-            const range = document.createRange();
+            var cardId = (selectedCompany === 'golive') ? 'goliveCard' : 'onebridgeCard';
+            var card = document.getElementById(cardId);
+            var range = document.createRange();
             range.selectNode(card);
             window.getSelection().removeAllRanges();
             window.getSelection().addRange(range);
@@ -802,47 +1220,45 @@
             window.getSelection().removeAllRanges();
         }
 
-        // Download PNG — renders ONLY the active brand card
         function downloadAsPNG() {
             showToast('Rendering PNG image...');
-            const cardId = (selectedCompany === 'golive') ? 'goliveCard' : 'onebridgeCard';
-            const card = document.getElementById(cardId);
-            html2canvas(card, { scale: 3, useCORS: true, backgroundColor: '#ffffff' }).then(canvas => {
-                const link = document.createElement('a');
-                const name = document.getElementById('inputName').value || 'Avala_Vinay';
-                const config = COMPANY_CONFIG[selectedCompany];
-                link.download = `${name.replace(/\s+/g, '_')}_${config.filePrefix}_Signature.png`;
+            var cardId = (selectedCompany === 'golive') ? 'goliveCard' : 'onebridgeCard';
+            var card = document.getElementById(cardId);
+            html2canvas(card, { scale: 3, useCORS: true, backgroundColor: '#ffffff' }).then(function(canvas) {
+                var link = document.createElement('a');
+                var name = document.getElementById('inputName').value || 'Avala_Vinay';
+                var config = COMPANY_CONFIG[selectedCompany];
+                link.download = name.replace(/\s+/g, '_') + '_' + config.filePrefix + '_Signature.png';
                 link.href = canvas.toDataURL('image/png');
                 link.click();
                 showToast('PNG image downloaded!');
-            }).catch(err => {
+            }).catch(function(err) {
                 console.error(err);
                 showToast('Failed to export PNG.', false);
             });
         }
 
-        // Utility helpers
         function dataURLToUint8Array(dataUrl) {
-            const base64 = dataUrl.split(',')[1];
-            const binaryString = window.atob(base64);
-            const bytes = new Uint8Array(binaryString.length);
-            for (let i = 0; i < binaryString.length; i++) bytes[i] = binaryString.charCodeAt(i);
+            var base64 = dataUrl.split(',')[1];
+            var binaryString = window.atob(base64);
+            var bytes = new Uint8Array(binaryString.length);
+            for (var i = 0; i < binaryString.length; i++) bytes[i] = binaryString.charCodeAt(i);
             return bytes;
         }
 
         function loadImageAsUint8Array(url, width, height) {
-            return new Promise((resolve, reject) => {
-                const img = new Image();
+            return new Promise(function(resolve, reject) {
+                var img = new Image();
                 img.crossOrigin = 'anonymous';
-                img.onload = () => {
-                    const canvas = document.createElement('canvas');
+                img.onload = function() {
+                    var canvas = document.createElement('canvas');
                     canvas.width = width; canvas.height = height;
-                    const ctx = canvas.getContext('2d');
+                    var ctx = canvas.getContext('2d');
                     ctx.clearRect(0, 0, width, height);
                     ctx.drawImage(img, 0, 0, width, height);
                     resolve(dataURLToUint8Array(canvas.toDataURL('image/png')));
                 };
-                img.onerror = () => reject(new Error(`Failed to load image: ${url}`));
+                img.onerror = function() { reject(new Error('Failed to load image: ' + url)); };
                 img.src = url;
             });
         }
@@ -851,72 +1267,71 @@
             if (!window.docx) { showToast('DOCX Library loading... Please try again in a moment.', false); return; }
             showToast('Generating .DOCX File...');
 
-            const name        = document.getElementById('inputName').value        || 'Avala Vinay';
-            const designation = document.getElementById('inputDesignation').value || 'Full Stack Developer';
-            const config      = COMPANY_CONFIG[selectedCompany];
-            const email       = document.getElementById('inputEmail').value       || config.emailDefault;
-            const phone       = document.getElementById('inputPhone').value       || config.phoneDefault;
-            const website     = document.getElementById('inputWebsite').value     || config.websiteDefault;
-            const address     = document.getElementById('inputAddress').value     || config.addressDefault;
+            var name = document.getElementById('inputName').value || 'Avala Vinay';
+            var designation = document.getElementById('inputDesignation').value || 'Full Stack Developer';
+            var config = COMPANY_CONFIG[selectedCompany];
+            var email = document.getElementById('inputEmail').value || config.emailDefault;
+            var phone = document.getElementById('inputPhone').value || config.phoneDefault;
+            var website = document.getElementById('inputWebsite').value || config.websiteDefault;
+            var address = document.getElementById('inputAddress').value || config.addressDefault;
 
             try {
-                const logoH = config.logoHeight || 80;
-                const logoW = Math.round(logoH * (240 / 130));
-                const logoPngBytes = await loadImageAsUint8Array(config.logo, logoW, logoH);
-                const qrPngBytes   = await loadImageAsUint8Array(config.qr, 300, 300);
+                var logoH = config.logoHeight || 80;
+                var logoW = Math.round(logoH * (240 / 130));
+                var logoPngBytes = await loadImageAsUint8Array(config.logo, logoW, logoH);
+                var qrPngBytes = await loadImageAsUint8Array(config.qr, 300, 300);
 
-                const { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, WidthType, AlignmentType, BorderStyle, ImageRun } = window.docx;
-
-                const doc = new Document({
+                var docxObj = window.docx;
+                var doc = new docxObj.Document({
                     sections: [{
                         properties: { page: { margin: { top: 720, right: 720, bottom: 720, left: 720 } } },
                         children: [
-                            new Paragraph({
-                                children: [new TextRun({ text: `${config.label.toUpperCase()} — OFFICIAL SIGNATURE & TEMPLATE`, bold: true, size: 20, color: config.primaryColor.replace('#', ''), font: "Arial" })],
+                            new docxObj.Paragraph({
+                                children: [new docxObj.TextRun({ text: config.label.toUpperCase() + ' \u2014 OFFICIAL SIGNATURE & TEMPLATE', bold: true, size: 20, color: config.primaryColor.replace('#', ''), font: "Arial" })],
                                 space: { after: 240 }
                             }),
-                            new Table({
-                                width: { size: 100, type: WidthType.PERCENTAGE },
+                            new docxObj.Table({
+                                width: { size: 100, type: docxObj.WidthType.PERCENTAGE },
                                 borders: {
-                                    top:    { style: BorderStyle.SINGLE, size: 6, color: "E5E7EB" },
-                                    bottom: { style: BorderStyle.SINGLE, size: 6, color: "E5E7EB" },
-                                    left:   { style: BorderStyle.SINGLE, size: 6, color: "E5E7EB" },
-                                    right:  { style: BorderStyle.SINGLE, size: 6, color: "E5E7EB" },
-                                    insideHorizontal: { style: BorderStyle.SINGLE, size: 4, color: "E5E7EB" },
-                                    insideVertical:   { style: BorderStyle.SINGLE, size: 4, color: "E5E7EB" },
+                                    top: { style: docxObj.BorderStyle.SINGLE, size: 6, color: "E5E7EB" },
+                                    bottom: { style: docxObj.BorderStyle.SINGLE, size: 6, color: "E5E7EB" },
+                                    left: { style: docxObj.BorderStyle.SINGLE, size: 6, color: "E5E7EB" },
+                                    right: { style: docxObj.BorderStyle.SINGLE, size: 6, color: "E5E7EB" },
+                                    insideHorizontal: { style: docxObj.BorderStyle.SINGLE, size: 4, color: "E5E7EB" },
+                                    insideVertical: { style: docxObj.BorderStyle.SINGLE, size: 4, color: "E5E7EB" },
                                 },
                                 rows: [
-                                    new TableRow({ children: [
-                                        new TableCell({ width: { size: 34, type: WidthType.PERCENTAGE }, margins: { top:160, bottom:160, left:160, right:160 },
+                                    new docxObj.TableRow({ children: [
+                                        new docxObj.TableCell({ width: { size: 34, type: docxObj.WidthType.PERCENTAGE }, margins: { top:160, bottom:160, left:160, right:160 },
                                             children: [
-                                                new Paragraph({ alignment: AlignmentType.CENTER, children: [new ImageRun({ data: logoPngBytes, transformation: { width: logoW, height: logoH } })], space: { after: 120 } }),
-                                                new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: config.label, bold: true, size: 26, color: config.primaryColor.replace('#',''), font:"Arial" })] }),
-                                                new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: `— ${config.brandSuffix} —`, bold: true, size: 13, color: config.secondaryColor.replace('#',''), font:"Arial" })], space: { after: 120 } }),
-                                                new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: config.sloganDefault, size: 16, color: config.secondaryColor.replace('#',''), font:"Arial" })] }),
+                                                new docxObj.Paragraph({ alignment: docxObj.AlignmentType.CENTER, children: [new docxObj.ImageRun({ data: logoPngBytes, transformation: { width: logoW, height: logoH } })], space: { after: 120 } }),
+                                                new docxObj.Paragraph({ alignment: docxObj.AlignmentType.CENTER, children: [new docxObj.TextRun({ text: config.label, bold: true, size: 26, color: config.primaryColor.replace('#',''), font:"Arial" })] }),
+                                                new docxObj.Paragraph({ alignment: docxObj.AlignmentType.CENTER, children: [new docxObj.TextRun({ text: '\u2014 ' + config.brandSuffix + ' \u2014', bold: true, size: 13, color: config.secondaryColor.replace('#',''), font:"Arial" })], space: { after: 120 } }),
+                                                new docxObj.Paragraph({ alignment: docxObj.AlignmentType.CENTER, children: [new docxObj.TextRun({ text: config.sloganDefault, size: 16, color: config.secondaryColor.replace('#',''), font:"Arial" })] }),
                                             ]
                                         }),
-                                        new TableCell({ width: { size: 42, type: WidthType.PERCENTAGE }, margins: { top:160, bottom:160, left:200, right:160 },
+                                        new docxObj.TableCell({ width: { size: 42, type: docxObj.WidthType.PERCENTAGE }, margins: { top:160, bottom:160, left:200, right:160 },
                                             children: [
-                                                new Paragraph({ children: [new TextRun({ text: name, bold: true, size: 28, color:"111827", font:"Arial" })] }),
-                                                new Paragraph({ children: [new TextRun({ text: designation, bold: true, size: 20, color: config.primaryColor.replace('#',''), font:"Arial" })], space: { after: 120 } }),
-                                                new Paragraph({ children: [new TextRun({ text:"✉  ", size:18 }), new TextRun({ text: email, size:17, color: config.secondaryColor.replace('#',''), font:"Arial" })], space: { after: 60 } }),
-                                                new Paragraph({ children: [new TextRun({ text:"📞  ", size:18 }), new TextRun({ text: phone, size:17, color: config.secondaryColor.replace('#',''), font:"Arial" })], space: { after: 60 } }),
-                                                new Paragraph({ children: [new TextRun({ text:"🌐  ", size:18 }), new TextRun({ text: website, size:17, color: config.secondaryColor.replace('#',''), font:"Arial" })], space: { after: 60 } }),
-                                                new Paragraph({ children: [new TextRun({ text:"📍  ", size:18 }), new TextRun({ text: address, size:16, color: config.secondaryColor.replace('#',''), font:"Arial" })] }),
+                                                new docxObj.Paragraph({ children: [new docxObj.TextRun({ text: name, bold: true, size: 28, color:"111827", font:"Arial" })] }),
+                                                new docxObj.Paragraph({ children: [new docxObj.TextRun({ text: designation, bold: true, size: 20, color: config.primaryColor.replace('#',''), font:"Arial" })], space: { after: 120 } }),
+                                                new docxObj.Paragraph({ children: [new docxObj.TextRun({ text:"\u2709  ", size:18 }), new docxObj.TextRun({ text: email, size:17, color: config.secondaryColor.replace('#',''), font:"Arial" })], space: { after: 60 } }),
+                                                new docxObj.Paragraph({ children: [new docxObj.TextRun({ text:"\uD83D\uDCDE  ", size:18 }), new docxObj.TextRun({ text: phone, size:17, color: config.secondaryColor.replace('#',''), font:"Arial" })], space: { after: 60 } }),
+                                                new docxObj.Paragraph({ children: [new docxObj.TextRun({ text:"\uD83C\uDF10  ", size:18 }), new docxObj.TextRun({ text: website, size:17, color: config.secondaryColor.replace('#',''), font:"Arial" })], space: { after: 60 } }),
+                                                new docxObj.Paragraph({ children: [new docxObj.TextRun({ text:"\uD83D\uDCCD  ", size:18 }), new docxObj.TextRun({ text: address, size:16, color: config.secondaryColor.replace('#',''), font:"Arial" })] }),
                                             ]
                                         }),
-                                        new TableCell({ width: { size: 24, type: WidthType.PERCENTAGE }, margins: { top:160, bottom:160, left:120, right:120 },
+                                        new docxObj.TableCell({ width: { size: 24, type: docxObj.WidthType.PERCENTAGE }, margins: { top:160, bottom:160, left:120, right:120 },
                                             children: [
-                                                new Paragraph({ alignment: AlignmentType.CENTER, children: [new ImageRun({ data: qrPngBytes, transformation: { width: 95, height: 95 } })], space: { after: 100 } }),
-                                                new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: config.qrTitle + "\n", size:15, color:"4B5563", font:"Arial" }), new TextRun({ text: config.qrSubtitle, bold:true, size:15, color:"111827", font:"Arial" })] }),
+                                                new docxObj.Paragraph({ alignment: docxObj.AlignmentType.CENTER, children: [new docxObj.ImageRun({ data: qrPngBytes, transformation: { width: 95, height: 95 } })], space: { after: 100 } }),
+                                                new docxObj.Paragraph({ alignment: docxObj.AlignmentType.CENTER, children: [new docxObj.TextRun({ text: config.qrTitle + "\n", size:15, color:"4B5563", font:"Arial" }), new docxObj.TextRun({ text: config.qrSubtitle, bold:true, size:15, color:"111827", font:"Arial" })] }),
                                             ]
                                         }),
                                     ]}),
-                                    new TableRow({ children: [
-                                        new TableCell({ columnSpan: 3, margins: { top:120, bottom:120, left:160, right:160 },
-                                            children: [new Paragraph({ children: [
-                                                new TextRun({ text:"🛡 CONFIDENTIALITY NOTICE: ", bold:true, size:15, color: config.primaryColor.replace('#',''), font:"Arial" }),
-                                                new TextRun({ text:"This email and any attachments are confidential and intended solely for the named recipient. If you received this email in error, please notify the sender and delete it.", size:14, color:"6B7280", font:"Arial" })
+                                    new docxObj.TableRow({ children: [
+                                        new docxObj.TableCell({ columnSpan: 3, margins: { top:120, bottom:120, left:160, right:160 },
+                                            children: [new docxObj.Paragraph({ children: [
+                                                new docxObj.TextRun({ text:"\uD83D\uDEE1 CONFIDENTIALITY NOTICE: ", bold:true, size:15, color: config.primaryColor.replace('#',''), font:"Arial" }),
+                                                new docxObj.TextRun({ text:"This email and any attachments are confidential and intended solely for the named recipient. If you received this email in error, please notify the sender and delete it.", size:14, color:"6B7280", font:"Arial" })
                                             ]})]
                                         })
                                     ]}),
@@ -926,15 +1341,178 @@
                     }]
                 });
 
-                const blob = await Packer.toBlob(doc);
-                const fileName = `${name.replace(/\s+/g, '_')}_${config.filePrefix}_Template.docx`;
+                var blob = await docxObj.Packer.toBlob(doc);
+                var fileName = name.replace(/\s+/g, '_') + '_' + config.filePrefix + '_Template.docx';
                 saveAs(blob, fileName);
-                showToast(`Downloaded ${fileName}!`, true);
+                showToast('Downloaded ' + fileName + '!', true);
 
             } catch (error) {
                 console.error("Error generating docx:", error);
                 showToast("Failed to generate DOCX file. Check console.", false);
             }
+        }
+
+        // ===== ID CARD MODE FUNCTIONS =====
+
+        function switchMode(mode) {
+            document.getElementById('signatureMode').style.display = (mode === 'signature') ? 'grid' : 'none';
+            document.getElementById('idCardMode').style.display = (mode === 'idcard') ? 'grid' : 'none';
+            document.getElementById('tabSignature').classList.toggle('active', mode === 'signature');
+            document.getElementById('tabIdCard').classList.toggle('active', mode === 'idcard');
+        }
+
+        function handleIdLogo(e) {
+            var file = e.target.files[0];
+            if (!file) return;
+            var reader = new FileReader();
+            reader.onload = function(ev) {
+                var dataUrl = ev.target.result;
+                document.getElementById('idLogoPreview').src = dataUrl;
+                document.getElementById('idLogoPreview').style.display = 'block';
+                document.getElementById('idLogoPlaceholder').style.display = 'none';
+                document.getElementById('idLogoUpload').classList.add('has-photo');
+                document.getElementById('idLogoWrap').innerHTML = '<img src="' + dataUrl + '" style="max-height:100%; max-width:100%; object-fit:contain;" alt="Company Logo">';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function handleIdPhoto(e) {
+            var file = e.target.files[0];
+            if (!file) return;
+            var reader = new FileReader();
+            reader.onload = function(ev) {
+                idPhotoDataUrl = ev.target.result;
+                document.getElementById('idPhotoPreview').src = idPhotoDataUrl;
+                document.getElementById('idPhotoPreview').style.display = 'block';
+                document.getElementById('idPhotoPlaceholder').style.display = 'none';
+                document.getElementById('idPhotoUpload').classList.add('has-photo');
+                var photoImg = document.getElementById('idPhotoImg');
+                var photoIcon = document.getElementById('idPhotoPlaceholderCard');
+                photoImg.src = idPhotoDataUrl;
+                photoImg.style.display = 'block';
+                photoIcon.style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function clearIdPhoto() {
+            idPhotoDataUrl = null;
+            document.getElementById('idPhotoInput').value = '';
+            document.getElementById('idPhotoPreview').style.display = 'none';
+            document.getElementById('idPhotoPlaceholder').style.display = 'block';
+            document.getElementById('idPhotoUpload').classList.remove('has-photo');
+            var photoImg = document.getElementById('idPhotoImg');
+            var photoIcon = document.getElementById('idPhotoPlaceholderCard');
+            photoImg.style.display = 'none';
+            photoIcon.style.display = 'flex';
+        }
+
+        function openCamera() {
+            var overlay = document.createElement('div');
+            overlay.className = 'camera-overlay';
+            overlay.id = 'cameraOverlay';
+            overlay.innerHTML = '<video id="cameraVideo" autoplay playsinline></video><canvas id="cameraCanvas"></canvas><div style="display:flex;gap:12px;"><button id="captureBtn" style="padding:12px 28px;border-radius:12px;background:#f37021;color:#fff;font-weight:700;font-size:14px;border:none;cursor:pointer;"><i class="fa-solid fa-camera mr-1"></i> Capture</button><button id="closeCamBtn" style="padding:12px 28px;border-radius:12px;background:#334155;color:#fff;font-weight:700;font-size:14px;border:none;cursor:pointer;"><i class="fa-solid fa-xmark mr-1"></i> Close</button></div>';
+            document.body.appendChild(overlay);
+
+            navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } } })
+                .then(function(stream) {
+                    cameraStream = stream;
+                    document.getElementById('cameraVideo').srcObject = stream;
+                })
+                .catch(function() {
+                    showToast('Camera access denied. Please upload a file instead.', false);
+                    overlay.remove();
+                });
+
+            document.getElementById('captureBtn').onclick = function() {
+                var video = document.getElementById('cameraVideo');
+                var canvas = document.getElementById('cameraCanvas');
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                canvas.getContext('2d').drawImage(video, 0, 0);
+                idPhotoDataUrl = canvas.toDataURL('image/png');
+                document.getElementById('idPhotoPreview').src = idPhotoDataUrl;
+                document.getElementById('idPhotoPreview').style.display = 'block';
+                document.getElementById('idPhotoPlaceholder').style.display = 'none';
+                document.getElementById('idPhotoUpload').classList.add('has-photo');
+                var photoImg = document.getElementById('idPhotoImg');
+                var photoIcon = document.getElementById('idPhotoPlaceholderCard');
+                photoImg.src = idPhotoDataUrl;
+                photoImg.style.display = 'block';
+                photoIcon.style.display = 'none';
+                closeCamera();
+                showToast('Photo captured successfully!');
+            };
+
+            document.getElementById('closeCamBtn').onclick = closeCamera;
+        }
+
+        function closeCamera() {
+            if (cameraStream) {
+                cameraStream.getTracks().forEach(function(t) { t.stop(); });
+                cameraStream = null;
+            }
+            var overlay = document.getElementById('cameraOverlay');
+            if (overlay) overlay.remove();
+        }
+
+        function handleQrUpload(e) {
+            var file = e.target.files[0];
+            if (!file) return;
+            var reader = new FileReader();
+            reader.onload = function(ev) {
+                var qrImg = document.getElementById('idQrImg');
+                var qrIcon = document.getElementById('idQrPlaceholderCard');
+                qrImg.src = ev.target.result;
+                qrImg.style.display = 'block';
+                qrIcon.style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function updateIdCardPreview() {
+            var name = document.getElementById('idNameInput').value || 'Uday Kumar C';
+            var designation = document.getElementById('idDesignationInput').value || 'Managing Director & CEO';
+            var tagline = document.getElementById('inputIdTagline').value || COMPANY_CONFIG[selectedCompany].idTaglineDefault;
+
+            document.getElementById('idName').innerText = name;
+            document.getElementById('idDesignation').innerText = designation;
+            document.getElementById('idTagline').innerText = tagline;
+
+            var photoImg = document.getElementById('idPhotoImg');
+            var photoIcon = document.getElementById('idPhotoPlaceholderCard');
+            if (idPhotoDataUrl) {
+                photoImg.src = idPhotoDataUrl;
+                photoImg.style.display = 'block';
+                photoIcon.style.display = 'none';
+            } else {
+                photoImg.style.display = 'none';
+                photoIcon.style.display = 'flex';
+            }
+
+            var qrImg = document.getElementById('idQrImg');
+            var qrIcon = document.getElementById('idQrPlaceholderCard');
+            if (qrImg && qrImg.src && qrImg.style.display !== 'none') {
+            } else if (qrIcon) {
+                qrIcon.style.display = 'block';
+            }
+        }
+
+        function downloadIdCardPNG() {
+            showToast('Rendering ID Card PNG...');
+            var card = document.getElementById('idCardPreview');
+            html2canvas(card, { scale: 4, useCORS: true, backgroundColor: '#f8fafc' }).then(function(canvas) {
+                var link = document.createElement('a');
+                var name = document.getElementById('inputName').value || 'Employee';
+                var config = COMPANY_CONFIG[selectedCompany];
+                link.download = name.replace(/\s+/g, '_') + '_' + config.filePrefix + '_ID_Card.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+                showToast('ID Card PNG downloaded!');
+            }).catch(function(err) {
+                console.error(err);
+                showToast('Failed to export ID Card PNG.', false);
+            });
         }
     </script>
 </body>
