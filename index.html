@@ -39,11 +39,19 @@
         }
 
         /* Prevent iOS font-size boost on inputs */
-        input, select, textarea {
+        input,
+        select,
+        textarea {
             font-size: 16px !important;
         }
+
         @media (min-width: 640px) {
-            input, select, textarea { font-size: 14px !important; }
+
+            input,
+            select,
+            textarea {
+                font-size: 14px !important;
+            }
         }
 
         /* Smooth horizontal scroll on mobile for signature cards */
@@ -52,9 +60,11 @@
             scrollbar-width: thin;
             scrollbar-color: #cbd5e1 transparent;
         }
+
         .overflow-x-auto::-webkit-scrollbar {
             height: 4px;
         }
+
         .overflow-x-auto::-webkit-scrollbar-thumb {
             background: #cbd5e1;
             border-radius: 4px;
@@ -278,6 +288,7 @@
             background: linear-gradient(90deg, #00173d, #0052cc 50%, #eab308) !important;
             height: 2px !important;
         }
+
         /* ====== Mode Tabs ====== */
         .mode-tab {
             padding: 8px 20px;
@@ -290,15 +301,17 @@
             background: #f1f5f9;
             color: #64748b;
         }
+
         .mode-tab:hover {
             background: #e2e8f0;
             color: #334155;
         }
+
         .mode-tab.active {
             background: var(--primary, #f37021);
             color: #ffffff;
             border-color: var(--primary, #f37021);
-            box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
         }
 
         /* ====== High-Precision ID Card Canvas ====== */
@@ -310,7 +323,7 @@
             border: 8px solid #0f172a;
             overflow: hidden;
             background: #f8fafc;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.45), 0 0 2px rgba(255,255,255,0.2);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.45), 0 0 2px rgba(255, 255, 255, 0.2);
             font-family: 'Inter', sans-serif;
             user-select: none;
         }
@@ -333,10 +346,12 @@
             transition: all 0.25s ease;
             background: #f8fafc;
         }
+
         .id-photo-upload:hover {
             border-color: var(--primary, #f37021);
             background: #fff7ed;
         }
+
         .id-photo-upload.has-photo {
             padding: 8px;
             border-style: solid;
@@ -348,7 +363,7 @@
         .camera-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.85);
+            background: rgba(0, 0, 0, 0.85);
             z-index: 100;
             display: flex;
             align-items: center;
@@ -356,13 +371,17 @@
             flex-direction: column;
             gap: 16px;
         }
+
         .camera-overlay video {
             max-width: 90%;
             max-height: 60vh;
             border-radius: 12px;
             border: 3px solid #fff;
         }
-        .camera-overlay canvas { display: none; }
+
+        .camera-overlay canvas {
+            display: none;
+        }
     </style>
 </head>
 
@@ -371,12 +390,16 @@
     <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
         <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-14 sm:h-16 flex items-center justify-between gap-2">
             <div class="flex items-center gap-2 sm:gap-3 min-w-0">
-                <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl brand-primary flex items-center justify-center text-white font-bold text-base sm:text-xl shadow-sm shrink-0">
+                <div
+                    class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl brand-primary flex items-center justify-center text-white font-bold text-base sm:text-xl shadow-sm shrink-0">
                     <i class="fa-solid fa-id-card"></i>
                 </div>
                 <div class="min-w-0">
-                    <h1 id="headerTitle" class="font-brand text-sm sm:text-lg font-bold text-slate-900 leading-tight truncate">OneBridge Template Generator</h1>
-                    <p id="headerSubtitle" class="text-[10px] sm:text-xs text-slate-500 hidden sm:block">Live Editor &bull; DOCX Exporter &bull; HTML Signature</p>
+                    <h1 id="headerTitle"
+                        class="font-brand text-sm sm:text-lg font-bold text-slate-900 leading-tight truncate">OneBridge
+                        Template Generator</h1>
+                    <p id="headerSubtitle" class="text-[10px] sm:text-xs text-slate-500 hidden sm:block">Live Editor
+                        &bull; DOCX Exporter &bull; HTML Signature</p>
                 </div>
             </div>
             <div class="flex items-center gap-1.5 sm:gap-3 shrink-0">
@@ -411,434 +434,550 @@
             </button>
         </div>
 
-    <!-- ===== SIGNATURE MODE ===== -->
-    <div id="signatureMode" class="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-8">
+        <!-- ===== SIGNATURE MODE ===== -->
+        <div id="signatureMode" class="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-8">
 
-        <!-- Sidebar Input Controls -->
-        <div class="lg:col-span-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col gap-6 h-fit">
+            <!-- Sidebar Input Controls -->
             <div
-                class="border-b border-slate-100 pb-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <div>
-                    <h2 class="font-brand font-bold text-slate-900 text-base flex items-center gap-2">
-                        <i class="fa-solid fa-sliders brand-primary"></i> Edit Template Fields
-                    </h2>
-                    <p class="text-xs text-slate-500 mt-0.5">Changes immediately sync with preview & document export.
-                    </p>
-                </div>
-                <button onclick="resetDefaults()"
-                    class="text-xs brand-primary font-semibold hover:underline">Reset</button>
-            </div>
-
-            <!-- Form Fields -->
-            <div class="grid gap-4 sm:grid-cols-2">
-                <div>
-                    <label for="companySelector" class="block text-xs font-semibold text-slate-700 mb-1">Choose
-                        Company</label>
-                    <select id="companySelector" onchange="setCompany(this.value)"
-                        class="w-full text-sm px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent bg-white"
-                        style="box-shadow: inset 0 0 0 1px #cbd5e1;">
-                        <option value="onebridge">OneBridge Infotech</option>
-                        <option value="golive">GoLive Classes</option>
-                    </select>
-                </div>
-                <div class="sm:col-span-1">
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">Active Company</label>
-                    <div id="companyNameTitle"
-                        class="px-3 py-2 border border-slate-300 rounded-lg bg-slate-50 text-sm font-semibold text-slate-800">
-                        GoLive Classes</div>
-                </div>
-            </div>
-
-            <!-- Form Fields -->
-            <div class="space-y-4">
-                <!-- Name & Designation -->
-                <div class="space-y-3 bg-accent p-3.5 rounded-xl border border-slate-200">
-                    <span class="text-xs font-bold brand-primary uppercase tracking-wider block">Primary
-                        Information</span>
+                class="lg:col-span-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col gap-6 h-fit">
+                <div
+                    class="border-b border-slate-100 pb-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <div>
-                        <label for="inputName" class="block text-xs font-semibold text-slate-700 mb-1">Full Name</label>
-                        <input type="text" id="inputName" value="Avala Vinay" oninput="updatePreview()"
-                            class="w-full text-sm px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0A3D7A] focus:border-transparent bg-white">
+                        <h2 class="font-brand font-bold text-slate-900 text-base flex items-center gap-2">
+                            <i class="fa-solid fa-sliders brand-primary"></i> Edit Template Fields
+                        </h2>
+                        <p class="text-xs text-slate-500 mt-0.5">Changes immediately sync with preview & document
+                            export.
+                        </p>
                     </div>
+                    <button onclick="resetDefaults()"
+                        class="text-xs brand-primary font-semibold hover:underline">Reset</button>
+                </div>
 
+                <!-- Form Fields -->
+                <div class="grid gap-4 sm:grid-cols-2">
                     <div>
-                        <label for="inputDesignation"
-                            class="block text-xs font-semibold text-slate-700 mb-1">Designation / Role</label>
-                        <input type="text" id="inputDesignation" value="Full Stack Developer" oninput="updatePreview()"
-                            class="w-full text-sm px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0A3D7A] focus:border-transparent bg-white">
+                        <label for="companySelector" class="block text-xs font-semibold text-slate-700 mb-1">Choose
+                            Company</label>
+                        <select id="companySelector" onchange="setCompany(this.value)"
+                            class="w-full text-sm px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent bg-white"
+                            style="box-shadow: inset 0 0 0 1px #cbd5e1;">
+                            <option value="onebridge">OneBridge Infotech</option>
+                            <option value="golive">GoLive Classes</option>
+                        </select>
+                    </div>
+                    <div class="sm:col-span-1">
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Active Company</label>
+                        <div id="companyNameTitle"
+                            class="px-3 py-2 border border-slate-300 rounded-lg bg-slate-50 text-sm font-semibold text-slate-800">
+                            GoLive Classes</div>
                     </div>
                 </div>
 
-                <!-- Contact Info -->
+                <!-- Form Fields -->
                 <div class="space-y-4">
-                    <div>
-                        <label for="inputEmail" class="block text-xs font-semibold text-slate-700 mb-1">Email
-                            Address</label>
-                        <input type="email" id="inputEmail" value="info@goliveclasses.co" oninput="updatePreview()"
-                            class="w-full text-sm px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0A3D7A] focus:border-transparent">
+                    <!-- Name & Designation -->
+                    <div class="space-y-3 bg-accent p-3.5 rounded-xl border border-slate-200">
+                        <span class="text-xs font-bold brand-primary uppercase tracking-wider block">Primary
+                            Information</span>
+                        <div>
+                            <label for="inputName" class="block text-xs font-semibold text-slate-700 mb-1">Full
+                                Name</label>
+                            <input type="text" id="inputName" value="Avala Vinay" oninput="updatePreview()"
+                                class="w-full text-sm px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0A3D7A] focus:border-transparent bg-white">
+                        </div>
+
+                        <div>
+                            <label for="inputDesignation"
+                                class="block text-xs font-semibold text-slate-700 mb-1">Designation / Role</label>
+                            <input type="text" id="inputDesignation" value="Full Stack Developer"
+                                oninput="updatePreview()"
+                                class="w-full text-sm px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0A3D7A] focus:border-transparent bg-white">
+                        </div>
                     </div>
 
-                    <div>
-                        <label for="inputPhone" class="block text-xs font-semibold text-slate-700 mb-1">Phone Number</label>
-                        <input type="text" id="inputPhone" value="+91 9398355196" oninput="updatePreview()"
-                            class="w-full text-sm px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0A3D7A] focus:border-transparent">
-                    </div>
+                    <!-- Contact Info -->
+                    <div class="space-y-4">
+                        <div>
+                            <label for="inputEmail" class="block text-xs font-semibold text-slate-700 mb-1">Email
+                                Address</label>
+                            <input type="email" id="inputEmail" value="info@goliveclasses.co" oninput="updatePreview()"
+                                class="w-full text-sm px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0A3D7A] focus:border-transparent">
+                        </div>
 
-                    <div>
-                        <label for="inputWebsite" class="block text-xs font-semibold text-slate-700 mb-1">Website
-                            URL</label>
-                        <input type="text" id="inputWebsite" value="www.goliveclasses.co" oninput="updatePreview()"
-                            class="w-full text-sm px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0A3D7A] focus:border-transparent">
-                    </div>
+                        <div>
+                            <label for="inputPhone" class="block text-xs font-semibold text-slate-700 mb-1">Phone
+                                Number</label>
+                            <input type="text" id="inputPhone" value="+91 9398355196" oninput="updatePreview()"
+                                class="w-full text-sm px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0A3D7A] focus:border-transparent">
+                        </div>
 
-                    <div>
-                        <label for="inputAddress" class="block text-xs font-semibold text-slate-700 mb-1">Office
-                            Address</label>
-                        <textarea id="inputAddress" rows="2" oninput="updatePreview()"
-                            class="w-full text-sm px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0A3D7A] focus:border-transparent resize-none">Plot No:41, Survey No:331, Bachupally, Hyderabad, India-500090</textarea>
-                    </div>
+                        <div>
+                            <label for="inputWebsite" class="block text-xs font-semibold text-slate-700 mb-1">Website
+                                URL</label>
+                            <input type="text" id="inputWebsite" value="www.goliveclasses.co" oninput="updatePreview()"
+                                class="w-full text-sm px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0A3D7A] focus:border-transparent">
+                        </div>
 
-                    <!-- Tagline & Slogan -->
-                    <div>
-                        <label for="inputSlogan" class="block text-xs font-semibold text-slate-700 mb-1">Company
-                            Slogan</label>
-                        <input type="text" id="inputSlogan" value="Learn Fast. Succeed Faster." oninput="updatePreview()"
-                            class="w-full text-sm px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0A3D7A] focus:border-transparent">
+                        <div>
+                            <label for="inputAddress" class="block text-xs font-semibold text-slate-700 mb-1">Office
+                                Address</label>
+                            <textarea id="inputAddress" rows="2" oninput="updatePreview()"
+                                class="w-full text-sm px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0A3D7A] focus:border-transparent resize-none">Plot No:41, Survey No:331, Bachupally, Hyderabad, India-500090</textarea>
+                        </div>
+
+                        <!-- Tagline & Slogan -->
+                        <div>
+                            <label for="inputSlogan" class="block text-xs font-semibold text-slate-700 mb-1">Company
+                                Slogan</label>
+                            <input type="text" id="inputSlogan" value="Learn Fast. Succeed Faster."
+                                oninput="updatePreview()"
+                                class="w-full text-sm px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0A3D7A] focus:border-transparent">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Asset Badges -->
+                <div class="pt-2 border-t border-slate-100">
+                    <label class="block text-xs font-semibold text-slate-700 mb-2">Embedded Visual Assets</label>
+                    <div class="grid grid-cols-2 gap-2 text-xs">
+                        <div class="p-2 border border-slate-200 rounded-lg flex items-center gap-2 bg-slate-50">
+                            <img id="thumbLogo" class="w-6 h-6 object-contain" alt="Logo">
+                            <span class="truncate text-slate-700 font-semibold text-[11px]">Logo + ® Badge</span>
+                        </div>
+                        <div class="p-2 border border-slate-200 rounded-lg flex items-center gap-2 bg-slate-50">
+                            <img id="thumbQr" class="w-6 h-6 object-contain" alt="QR">
+                            <span class="truncate text-slate-700 font-semibold text-[11px]">QR Code Ready</span>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Asset Badges -->
-            <div class="pt-2 border-t border-slate-100">
-                <label class="block text-xs font-semibold text-slate-700 mb-2">Embedded Visual Assets</label>
-                <div class="grid grid-cols-2 gap-2 text-xs">
-                    <div class="p-2 border border-slate-200 rounded-lg flex items-center gap-2 bg-slate-50">
-                        <img id="thumbLogo" class="w-6 h-6 object-contain" alt="Logo">
-                        <span class="truncate text-slate-700 font-semibold text-[11px]">Logo + ® Badge</span>
+            <div class="lg:col-span-8 flex flex-col gap-4">
+
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <span
+                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800">
+                            <span class="w-1.5 h-1.5 mr-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Live
+                            Preview
+                        </span>
+                        <span id="activeBrandLabel" class="text-xs text-slate-500 hidden sm:inline">GoLive Classes
+                            Signature</span>
                     </div>
-                    <div class="p-2 border border-slate-200 rounded-lg flex items-center gap-2 bg-slate-50">
-                        <img id="thumbQr" class="w-6 h-6 object-contain" alt="QR">
-                        <span class="truncate text-slate-700 font-semibold text-[11px]">QR Code Ready</span>
-                    </div>
+                    <div class="text-xs text-slate-400 font-mono hidden sm:block">Dynamic Brand Switch</div>
                 </div>
-            </div>
-        </div>
 
-        <div class="lg:col-span-8 flex flex-col gap-4">
+                <!-- Mobile scroll hint -->
+                <p class="text-[11px] text-slate-400 sm:hidden text-center">↔ Scroll sideways to view full signature</p>
 
-            <div class="flex items-center justify-between">
-                <div class="flex items-center gap-2">
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800">
-                        <span class="w-1.5 h-1.5 mr-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Live Preview
-                    </span>
-                    <span id="activeBrandLabel" class="text-xs text-slate-500 hidden sm:inline">GoLive Classes Signature</span>
-                </div>
-                <div class="text-xs text-slate-400 font-mono hidden sm:block">Dynamic Brand Switch</div>
-            </div>
-
-            <!-- Mobile scroll hint -->
-            <p class="text-[11px] text-slate-400 sm:hidden text-center">↔ Scroll sideways to view full signature</p>
-
-            <!-- ONEBRIDGE SIGNATURE CARD -->
-            <div id="onebridgeCard" style="display:none;">
-                <div class="overflow-x-auto -mx-3 sm:mx-0 pb-2">
-                <div class="bg-white rounded-xl card-shadow border border-slate-200 overflow-hidden p-4 sm:p-6 lg:p-8 relative" style="min-width:520px;">
-                    <!-- Orange top stripe -->
-                    <div style="position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#f37021,#ea580c,#c2410c);border-radius:12px 12px 0 0;"></div>
-
-                    <div class="grid grid-cols-12 gap-4 items-center pb-6 mt-2">
-                        <!-- Col 1: OB Branding -->
-                        <div class="col-span-4 flex flex-col items-center justify-center text-center pr-3">
-                            <div class="mb-3 flex items-center justify-center w-full" style="height:120px;">
-                                <img id="obLogoImg" src="image.png" class="object-contain" style="max-height:120px;" alt="OneBridge Logo">
-                            </div>
-                            <div class="font-black text-2xl tracking-tight font-brand leading-none" style="color:#f37021;">ONE<span style="color:#202020;">BRIDGE</span></div>
-                            <div class="flex items-center justify-center gap-1.5 my-1.5">
-                                <div class="h-[1px] w-5" style="background:#f37021;"></div>
-                                <span class="text-[9px] font-bold tracking-wider uppercase" style="color:#202020;">INFOTECH PVT. LTD.</span>
-                                <div class="h-[1px] w-5" style="background:#f37021;"></div>
-                            </div>
-                            <div class="w-28 h-[1px] my-2" style="background:#f37021;"></div>
-                            <p id="obSlogan" class="text-xs font-medium text-slate-700"></p>
-                        </div>
-
-                        <!-- Col 2: OB Contact Details -->
-                        <div class="col-span-5 px-4 border-l border-slate-200 flex flex-col justify-center">
-                            <h3 id="obName" class="text-2xl sm:text-[26px] font-extrabold font-brand leading-tight tracking-tight" style="color:#111827;">Avala Vinay</h3>
-                            <p id="obDesignation" class="text-sm font-semibold mt-0.5" style="color:#f37021;">Full Stack Developer</p>
-                            <div class="w-9 h-[2px] rounded-full mt-2 mb-3.5" style="background:#f37021;"></div>
-                            <div class="space-y-2.5">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-6 h-6 rounded-md flex items-center justify-center text-xs shrink-0" style="background:#FFF3EB;color:#f37021;"><i class="fa-solid fa-envelope"></i></div>
-                                    <span id="obEmail" class="truncate font-medium text-[11.5px] text-slate-800"></span>
-                                </div>
-                                <div class="flex items-center gap-3">
-                                    <div class="w-6 h-6 rounded-md flex items-center justify-center text-xs shrink-0" style="background:#FFF3EB;color:#f37021;"><i class="fa-solid fa-phone"></i></div>
-                                    <span id="obPhone" class="font-medium text-[11.5px] text-slate-800"></span>
-                                </div>
-                                <div class="flex items-center gap-3">
-                                    <div class="w-6 h-6 rounded-md flex items-center justify-center text-xs shrink-0" style="background:#FFF3EB;color:#f37021;"><i class="fa-solid fa-globe"></i></div>
-                                    <span id="obWebsite" class="font-medium text-[11.5px] text-slate-800"></span>
-                                </div>
-                                <div class="flex items-start gap-3">
-                                    <div class="w-6 h-6 rounded-md flex items-center justify-center text-xs shrink-0 mt-0.5" style="background:#FFF3EB;color:#f37021;"><i class="fa-solid fa-location-dot"></i></div>
-                                    <span id="obAddress" class="font-medium text-[11px] leading-snug text-slate-800"></span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Col 3: OB QR Code -->
-                        <div class="col-span-3 pl-3 border-l border-slate-200 flex flex-col items-center justify-center text-center">
-                            <div class="p-2 border border-slate-200 rounded-xl bg-white shadow-sm mb-2">
-                                <img id="obQrImg" src="image copy.png" class="w-24 h-24 sm:w-28 sm:h-28 object-contain" alt="QR Code">
-                            </div>
-                            <span class="text-[11px] font-medium text-slate-700 leading-snug">Scan to Visit<br><span class="font-bold text-slate-900">Our Website</span></span>
-                            <div class="w-6 h-[2px] rounded-full mt-2" style="background:#f37021;"></div>
-                        </div>
-                    </div>
-
-                    <!-- Divider -->
-                    <div class="w-full h-[1px] bg-slate-200 my-1"></div>
-
-                    <!-- Footer -->
-                    <div class="pt-4 flex items-center gap-4 text-left">
-                        <div class="flex items-center gap-2.5 shrink-0 border-r border-slate-200 pr-4">
-                            <div class="w-7 h-7 rounded-lg flex items-center justify-center text-xs shrink-0" style="border:1px solid #f37021;color:#f37021;background:#fff;">
-                                <i class="fa-solid fa-shield-halved"></i>
-                            </div>
-                            <span class="text-[10px] font-extrabold tracking-wider uppercase" style="color:#f37021;">CONFIDENTIALITY NOTICE</span>
-                        </div>
-                        <div class="flex-1">
-                            <p class="text-[9.5px] text-slate-500 leading-normal">This email and any attachments are confidential and intended solely for the named recipient. If you received this email in error, please notify the sender and delete it.</p>
-                        </div>
-                    </div>
-                </div>
-                </div><!-- /overflow-x-auto -->
-            </div>
-
-            <!-- GOLIVE CLASSES SIGNATURE CARD -->
-            <div id="goliveCard" style="display:block;">
-                <div class="overflow-x-auto -mx-3 sm:mx-0 pb-2">
-                <div class="rounded-xl overflow-hidden relative" style="background:#ffffff;border:1.5px solid #c7d7f8;box-shadow:0 12px 40px -8px rgba(0,82,204,0.14),0 4px 16px -4px rgba(0,23,61,0.08);min-width:520px;">
-                    <!-- Premium top stripe: thin gold-to-blue gradient -->
-                    <div style="height:4px;background:linear-gradient(90deg,#1e40af 0%,#3b82f6 45%,#eab308 75%,#facc15 100%);"></div>
-
-                    <div class="p-6 sm:p-8">
-                        <div class="grid grid-cols-12 gap-4 items-center pb-6">
-
-                            <!-- Col 1: GoLive Branding — light premium panel -->
-                            <div class="col-span-4 flex flex-col items-center justify-center text-center rounded-xl px-3 py-4 relative overflow-hidden" style="background:linear-gradient(160deg,#dbeafe 0%,#eff6ff 60%,#f0f9ff 100%);border:1.5px solid #bfdbfe;">
-                                <!-- Decorative top-left corner accent -->
-                                <div style="position:absolute;top:0;left:0;width:40px;height:40px;background:linear-gradient(135deg,#1e40af18,transparent);border-radius:0 0 100% 0;pointer-events:none;"></div>
-                                <!-- Decorative bottom-right corner gold -->
-                                <div style="position:absolute;bottom:0;right:0;width:40px;height:40px;background:linear-gradient(315deg,#eab30820,transparent);border-radius:100% 0 0 0;pointer-events:none;"></div>
-
-                                <!-- Logo: clean white card with elegant border -->
-                                <div class="mb-3 flex items-center justify-center w-full rounded-xl p-2" style="background:#ffffff;border:1.5px solid #dbeafe;box-shadow:0 2px 12px rgba(30,64,175,0.10);">
-                                    <img id="glLogoImg" src="image-1784886273966.png" class="object-contain w-full" style="max-height:120px;display:block;" alt="GoLive Classes Logo">
-                                </div>
-
-                                <!-- Brand name -->
-                                <div class="font-black text-xl tracking-tight font-brand leading-none" style="color:#1e3a8a;">GoLive <span style="color:#d97706;">Classes</span></div>
-                                <div class="flex items-center justify-center gap-1.5 my-1.5">
-                                    <div class="h-[1px] w-4" style="background:linear-gradient(90deg,#1e40af,#3b82f6);"></div>
-                                    <span class="text-[8px] font-bold tracking-wider uppercase" style="color:#1e40af;">Accelerate Your Learning</span>
-                                    <div class="h-[1px] w-4" style="background:linear-gradient(90deg,#3b82f6,#1e40af);"></div>
-                                </div>
-                                <div class="w-24 my-1.5" style="height:1.5px;background:linear-gradient(90deg,#1e40af,#eab308);border-radius:2px;"></div>
-                                <p id="glSlogan" class="text-[10px] font-semibold" style="color:#1e3a8a;"></p>
+                <!-- ONEBRIDGE SIGNATURE CARD -->
+                <div id="onebridgeCard" style="display:none;">
+                    <div class="overflow-x-auto -mx-3 sm:mx-0 pb-2">
+                        <div class="bg-white rounded-xl card-shadow border border-slate-200 overflow-hidden p-4 sm:p-6 lg:p-8 relative"
+                            style="min-width:520px;">
+                            <!-- Orange top stripe -->
+                            <div
+                                style="position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#f37021,#ea580c,#c2410c);border-radius:12px 12px 0 0;">
                             </div>
 
-                            <!-- Col 2: GoLive Contact Details -->
-                            <div class="col-span-5 px-4 flex flex-col justify-center" style="border-left:2px solid #bfdbfe;">
-                                <h3 id="glName" class="text-2xl sm:text-[26px] font-extrabold font-brand leading-tight tracking-tight" style="color:#0f172a;">Avala Vinay</h3>
-                                <p id="glDesignation" class="text-sm font-bold mt-0.5" style="color:#1e40af;">Full Stack Developer</p>
-                                <div class="rounded-full mt-2 mb-3.5" style="width:48px;height:2.5px;background:linear-gradient(90deg,#1e40af,#eab308);"></div>
-                                <div class="space-y-2.5">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-6 h-6 rounded-md flex items-center justify-center text-xs shrink-0" style="background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fbbf24;"><i class="fa-solid fa-envelope"></i></div>
-                                        <span id="glEmail" class="truncate font-medium text-[11.5px] text-slate-700"></span>
+                            <div class="grid grid-cols-12 gap-4 items-center pb-6 mt-2">
+                                <!-- Col 1: OB Branding -->
+                                <div class="col-span-4 flex flex-col items-center justify-center text-center pr-3">
+                                    <div class="mb-3 flex items-center justify-center w-full" style="height:120px;">
+                                        <img id="obLogoImg" src="image.png" class="object-contain"
+                                            style="max-height:120px;" alt="OneBridge Logo">
                                     </div>
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-6 h-6 rounded-md flex items-center justify-center text-xs shrink-0" style="background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fbbf24;"><i class="fa-solid fa-phone"></i></div>
-                                        <span id="glPhone" class="font-medium text-[11.5px] text-slate-700"></span>
+                                    <div class="font-black text-2xl tracking-tight font-brand leading-none"
+                                        style="color:#bb5f25;">ONE<span style="color:#202020;">BRIDGE</span></div>
+                                    <div class="flex items-center justify-center gap-1.5 my-1.5">
+                                        <div class="h-[1px] w-5" style="background:#f37021;"></div>
+                                        <span class="text-[9px] font-bold tracking-wider uppercase"
+                                            style="color:#202020;">INFOTECH PVT. LTD.</span>
+                                        <div class="h-[1px] w-5" style="background:#f37021;"></div>
                                     </div>
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-6 h-6 rounded-md flex items-center justify-center text-xs shrink-0" style="background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fbbf24;"><i class="fa-solid fa-globe"></i></div>
-                                        <span id="glWebsite" class="font-medium text-[11.5px] text-slate-700"></span>
-                                    </div>
-                                    <div class="flex items-start gap-3">
-                                        <div class="w-6 h-6 rounded-md flex items-center justify-center text-xs shrink-0 mt-0.5" style="background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fbbf24;"><i class="fa-solid fa-location-dot"></i></div>
-                                        <span id="glAddress" class="font-medium text-[11px] leading-snug text-slate-700"></span>
+                                    <div class="w-28 h-[1px] my-2" style="background:#f37021;"></div>
+                                    <p id="obSlogan" class="text-xs font-medium text-slate-700"></p>
+                                </div>
+
+                                <!-- Col 2: OB Contact Details -->
+                                <div class="col-span-5 px-4 border-l border-slate-200 flex flex-col justify-center">
+                                    <h3 id="obName"
+                                        class="text-2xl sm:text-[26px] font-extrabold font-brand leading-tight tracking-tight"
+                                        style="color:#111827;">Avala Vinay</h3>
+                                    <p id="obDesignation" class="text-sm font-semibold mt-0.5" style="color:#f37021;">
+                                        Full Stack Developer</p>
+                                    <div class="w-9 h-[2px] rounded-full mt-2 mb-3.5" style="background:#f37021;"></div>
+                                    <div class="space-y-2.5">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-6 h-6 rounded-md flex items-center justify-center text-xs shrink-0"
+                                                style="background:#FFF3EB;color:#f37021;"><i
+                                                    class="fa-solid fa-envelope"></i></div>
+                                            <span id="obEmail"
+                                                class="truncate font-medium text-[11.5px] text-slate-800"></span>
+                                        </div>
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-6 h-6 rounded-md flex items-center justify-center text-xs shrink-0"
+                                                style="background:#FFF3EB;color:#f37021;"><i
+                                                    class="fa-solid fa-phone"></i></div>
+                                            <span id="obPhone" class="font-medium text-[11.5px] text-slate-800"></span>
+                                        </div>
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-6 h-6 rounded-md flex items-center justify-center text-xs shrink-0"
+                                                style="background:#FFF3EB;color:#f37021;"><i
+                                                    class="fa-solid fa-globe"></i></div>
+                                            <span id="obWebsite"
+                                                class="font-medium text-[11.5px] text-slate-800"></span>
+                                        </div>
+                                        <div class="flex items-start gap-3">
+                                            <div class="w-6 h-6 rounded-md flex items-center justify-center text-xs shrink-0 mt-0.5"
+                                                style="background:#FFF3EB;color:#f37021;"><i
+                                                    class="fa-solid fa-location-dot"></i></div>
+                                            <span id="obAddress"
+                                                class="font-medium text-[11px] leading-snug text-slate-800"></span>
+                                        </div>
                                     </div>
                                 </div>
+
+                                <!-- Col 3: OB QR Code -->
+                                <div
+                                    class="col-span-3 pl-3 border-l border-slate-200 flex flex-col items-center justify-center text-center">
+                                    <div class="p-2 border border-slate-200 rounded-xl bg-white shadow-sm mb-2">
+                                        <img id="obQrImg" src="image copy.png"
+                                            class="w-24 h-24 sm:w-28 sm:h-28 object-contain" alt="QR Code">
+                                    </div>
+                                    <span class="text-[11px] font-medium text-slate-700 leading-snug">Scan to
+                                        Visit<br><span class="font-bold text-slate-900">Our Website</span></span>
+                                    <div class="w-6 h-[2px] rounded-full mt-2" style="background:#f37021;"></div>
+                                </div>
                             </div>
 
-                            <!-- Col 3: GoLive QR Code -->
-                            <div class="col-span-3 pl-3 flex flex-col items-center justify-center text-center" style="border-left:2px solid #bfdbfe;">
-                                <div class="p-2 rounded-xl mb-2" style="border:1.5px solid #3b82f6;background:#ffffff;box-shadow:0 4px 14px rgba(30,64,175,0.10);">
-                                    <img id="glQrImg" src="GoLiveClasses_QR_Code.png" class="w-24 h-24 sm:w-28 sm:h-28 object-contain" alt="GoLive QR Code">
+                            <!-- Divider -->
+                            <div class="w-full h-[1px] bg-slate-200 my-1"></div>
+
+                            <!-- Footer -->
+                            <div class="pt-4 flex items-center gap-4 text-left">
+                                <div class="flex items-center gap-2.5 shrink-0 border-r border-slate-200 pr-4">
+                                    <div class="w-7 h-7 rounded-lg flex items-center justify-center text-xs shrink-0"
+                                        style="border:1px solid #f37021;color:#f37021;background:#fff;">
+                                        <i class="fa-solid fa-shield-halved"></i>
+                                    </div>
+                                    <span class="text-[10px] font-extrabold tracking-wider uppercase"
+                                        style="color:#f37021;">CONFIDENTIALITY NOTICE</span>
                                 </div>
-                                <span class="text-[11px] font-medium leading-snug" style="color:#475569;">Scan to Join<br><span class="font-extrabold" style="color:#1e3a8a;">GoLive Classes</span></span>
-                                <div class="rounded-full mt-2" style="width:24px;height:2px;background:linear-gradient(90deg,#1e40af,#eab308);"></div>
+                                <div class="flex-1">
+                                    <p class="text-[9.5px] text-slate-500 leading-normal">This email and any attachments
+                                        are confidential and intended solely for the named recipient. If you received
+                                        this email in error, please notify the sender and delete it.</p>
+                                </div>
                             </div>
                         </div>
+                    </div><!-- /overflow-x-auto -->
+                </div>
 
-                        <!-- Elegant gradient divider -->
-                        <div class="my-1" style="height:1.5px;background:linear-gradient(90deg,#1e40af,#3b82f6 50%,#eab308);border-radius:2px;opacity:0.5;"></div>
+                <!-- GOLIVE CLASSES SIGNATURE CARD -->
+                <div id="goliveCard" style="display:block;">
+                    <div class="overflow-x-auto -mx-3 sm:mx-0 pb-2">
+                        <div class="rounded-xl overflow-hidden relative"
+                            style="background:#ffffff;border:1.5px solid #c7d7f8;box-shadow:0 12px 40px -8px rgba(0,82,204,0.14),0 4px 16px -4px rgba(0,23,61,0.08);min-width:520px;">
+                            <!-- Premium top stripe: thin gold-to-blue gradient -->
+                            <div
+                                style="height:4px;background:linear-gradient(90deg,#1e40af 0%,#3b82f6 45%,#eab308 75%,#facc15 100%);">
+                            </div>
 
-                        <!-- Footer confidentiality bar -->
-                        <div class="pt-3 flex items-center gap-4 text-left rounded-lg" style="background:linear-gradient(90deg,rgba(30,64,175,0.04),rgba(59,130,246,0.03));border:1px solid #dbeafe;padding:8px 12px;">
-                            <div class="flex items-center gap-2.5 shrink-0 border-r border-slate-200 pr-4">
-                                <div class="w-7 h-7 rounded-lg flex items-center justify-center text-xs shrink-0" style="background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fbbf24;">
-                                    <i class="fa-solid fa-shield-halved"></i>
+                            <div class="p-6 sm:p-8">
+                                <div class="grid grid-cols-12 gap-4 items-center pb-6">
+
+                                    <!-- Col 1: GoLive Branding — light premium panel -->
+                                    <div class="col-span-4 flex flex-col items-center justify-center text-center rounded-xl px-3 py-4 relative overflow-hidden"
+                                        style="background:linear-gradient(160deg,#dbeafe 0%,#eff6ff 60%,#f0f9ff 100%);border:1.5px solid #bfdbfe;">
+                                        <!-- Decorative top-left corner accent -->
+                                        <div
+                                            style="position:absolute;top:0;left:0;width:40px;height:40px;background:linear-gradient(135deg,#1e40af18,transparent);border-radius:0 0 100% 0;pointer-events:none;">
+                                        </div>
+                                        <!-- Decorative bottom-right corner gold -->
+                                        <div
+                                            style="position:absolute;bottom:0;right:0;width:40px;height:40px;background:linear-gradient(315deg,#eab30820,transparent);border-radius:100% 0 0 0;pointer-events:none;">
+                                        </div>
+
+                                        <!-- Logo: clean white card with elegant border -->
+                                        <div class="mb-3 flex items-center justify-center w-full rounded-xl p-2"
+                                            style="background:#ffffff;border:1.5px solid #dbeafe;box-shadow:0 2px 12px rgba(30,64,175,0.10);">
+                                            <img id="glLogoImg" src="image-1784886273966.png"
+                                                class="object-contain w-full" style="max-height:120px;display:block;"
+                                                alt="GoLive Classes Logo">
+                                        </div>
+
+                                        <!-- Brand name -->
+                                        <div class="font-black text-xl tracking-tight font-brand leading-none"
+                                            style="color:#1e3a8a;">GoLive <span style="color:#d97706;">Classes</span>
+                                        </div>
+                                        <div class="flex items-center justify-center gap-1.5 my-1.5">
+                                            <div class="h-[1px] w-4"
+                                                style="background:linear-gradient(90deg,#1e40af,#3b82f6);"></div>
+                                            <span class="text-[8px] font-bold tracking-wider uppercase"
+                                                style="color:#1e40af;">Accelerate Your Learning</span>
+                                            <div class="h-[1px] w-4"
+                                                style="background:linear-gradient(90deg,#3b82f6,#1e40af);"></div>
+                                        </div>
+                                        <div class="w-24 my-1.5"
+                                            style="height:1.5px;background:linear-gradient(90deg,#1e40af,#eab308);border-radius:2px;">
+                                        </div>
+                                        <p id="glSlogan" class="text-[10px] font-semibold" style="color:#1e3a8a;"></p>
+                                    </div>
+
+                                    <!-- Col 2: GoLive Contact Details -->
+                                    <div class="col-span-5 px-4 flex flex-col justify-center"
+                                        style="border-left:2px solid #bfdbfe;">
+                                        <h3 id="glName"
+                                            class="text-2xl sm:text-[26px] font-extrabold font-brand leading-tight tracking-tight"
+                                            style="color:#0f172a;">Avala Vinay</h3>
+                                        <p id="glDesignation" class="text-sm font-bold mt-0.5" style="color:#1e40af;">
+                                            Full Stack Developer</p>
+                                        <div class="rounded-full mt-2 mb-3.5"
+                                            style="width:48px;height:2.5px;background:linear-gradient(90deg,#1e40af,#eab308);">
+                                        </div>
+                                        <div class="space-y-2.5">
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-6 h-6 rounded-md flex items-center justify-center text-xs shrink-0"
+                                                    style="background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fbbf24;">
+                                                    <i class="fa-solid fa-envelope"></i>
+                                                </div>
+                                                <span id="glEmail"
+                                                    class="truncate font-medium text-[11.5px] text-slate-700"></span>
+                                            </div>
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-6 h-6 rounded-md flex items-center justify-center text-xs shrink-0"
+                                                    style="background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fbbf24;">
+                                                    <i class="fa-solid fa-phone"></i>
+                                                </div>
+                                                <span id="glPhone"
+                                                    class="font-medium text-[11.5px] text-slate-700"></span>
+                                            </div>
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-6 h-6 rounded-md flex items-center justify-center text-xs shrink-0"
+                                                    style="background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fbbf24;">
+                                                    <i class="fa-solid fa-globe"></i>
+                                                </div>
+                                                <span id="glWebsite"
+                                                    class="font-medium text-[11.5px] text-slate-700"></span>
+                                            </div>
+                                            <div class="flex items-start gap-3">
+                                                <div class="w-6 h-6 rounded-md flex items-center justify-center text-xs shrink-0 mt-0.5"
+                                                    style="background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fbbf24;">
+                                                    <i class="fa-solid fa-location-dot"></i>
+                                                </div>
+                                                <span id="glAddress"
+                                                    class="font-medium text-[11px] leading-snug text-slate-700"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Col 3: GoLive QR Code -->
+                                    <div class="col-span-3 pl-3 flex flex-col items-center justify-center text-center"
+                                        style="border-left:2px solid #bfdbfe;">
+                                        <div class="p-2 rounded-xl mb-2"
+                                            style="border:1.5px solid #3b82f6;background:#ffffff;box-shadow:0 4px 14px rgba(30,64,175,0.10);">
+                                            <img id="glQrImg" src="GoLiveClasses_QR_Code.png"
+                                                class="w-24 h-24 sm:w-28 sm:h-28 object-contain" alt="GoLive QR Code">
+                                        </div>
+                                        <span class="text-[11px] font-medium leading-snug" style="color:#475569;">Scan
+                                            to Join<br><span class="font-extrabold" style="color:#1e3a8a;">GoLive
+                                                Classes</span></span>
+                                        <div class="rounded-full mt-2"
+                                            style="width:24px;height:2px;background:linear-gradient(90deg,#1e40af,#eab308);">
+                                        </div>
+                                    </div>
                                 </div>
-                                <span class="text-[10px] font-extrabold tracking-wider uppercase" style="background:linear-gradient(90deg,#1e40af,#d97706);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">CONFIDENTIALITY NOTICE</span>
+
+                                <!-- Elegant gradient divider -->
+                                <div class="my-1"
+                                    style="height:1.5px;background:linear-gradient(90deg,#1e40af,#3b82f6 50%,#eab308);border-radius:2px;opacity:0.5;">
+                                </div>
+
+                                <!-- Footer confidentiality bar -->
+                                <div class="pt-3 flex items-center gap-4 text-left rounded-lg"
+                                    style="background:linear-gradient(90deg,rgba(30,64,175,0.04),rgba(59,130,246,0.03));border:1px solid #dbeafe;padding:8px 12px;">
+                                    <div class="flex items-center gap-2.5 shrink-0 border-r border-slate-200 pr-4">
+                                        <div class="w-7 h-7 rounded-lg flex items-center justify-center text-xs shrink-0"
+                                            style="background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fbbf24;">
+                                            <i class="fa-solid fa-shield-halved"></i>
+                                        </div>
+                                        <span class="text-[10px] font-extrabold tracking-wider uppercase"
+                                            style="background:linear-gradient(90deg,#1e40af,#d97706);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">CONFIDENTIALITY
+                                            NOTICE</span>
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="text-[9.5px] text-slate-500 leading-normal">This email and any
+                                            attachments are confidential and intended solely for the named recipient. If
+                                            you received this email in error, please notify the sender and delete it.
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="flex-1">
-                                <p class="text-[9.5px] text-slate-500 leading-normal">This email and any attachments are confidential and intended solely for the named recipient. If you received this email in error, please notify the sender and delete it.</p>
-                            </div>
-                        </div>
+                        </div><!-- /inner card -->
+                    </div><!-- /overflow-x-auto -->
+                </div>
+
+                <!-- Instructions & Download Banner -->
+                <div
+                    class="bg-slate-900 text-white p-4 sm:p-5 rounded-2xl flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4 mt-1">
+                    <div class="space-y-0.5 text-center sm:text-left">
+                        <h4
+                            class="font-brand font-bold text-sm flex items-center justify-center sm:justify-start gap-2">
+                            <i class="fa-solid fa-file-contract brand-primary"></i> Ready for Word &amp; Outlook
+                        </h4>
+                        <p class="text-xs text-slate-400 hidden sm:block">Generates a fully formatted Word `.docx` file
+                            with embedded images, matching tables, and typography.</p>
                     </div>
-                </div><!-- /inner card -->
-                </div><!-- /overflow-x-auto -->
-            </div>
-
-            <!-- Instructions & Download Banner -->
-            <div class="bg-slate-900 text-white p-4 sm:p-5 rounded-2xl flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4 mt-1">
-                <div class="space-y-0.5 text-center sm:text-left">
-                    <h4 class="font-brand font-bold text-sm flex items-center justify-center sm:justify-start gap-2">
-                        <i class="fa-solid fa-file-contract brand-primary"></i> Ready for Word &amp; Outlook
-                    </h4>
-                    <p class="text-xs text-slate-400 hidden sm:block">Generates a fully formatted Word `.docx` file with embedded images, matching tables, and typography.</p>
-                </div>
-                <div class="flex items-center justify-center gap-2 shrink-0">
-                    <button onclick="downloadAsPNG()" class="flex-1 sm:flex-none px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all border border-slate-700">
-                        <i class="fa-regular fa-image mr-1"></i> Save PNG
-                    </button>
-                    <button onclick="generateDOCX()" class="flex-1 sm:flex-none px-4 sm:px-5 py-2.5 button-primary font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-md flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-download text-sm"></i> Download .DOCX
-                    </button>
-                </div>
-            </div>
-
-            <!-- Notification Toast -->
-            <div id="toast"
-                class="fixed bottom-6 right-6 bg-slate-900 text-white text-xs px-4 py-3 rounded-xl shadow-2xl transition-all duration-300 transform translate-y-20 opacity-0 flex items-center gap-2.5 z-50">
-                <i id="toastIcon" class="fa-solid fa-check-circle text-emerald-400 text-base"></i>
-                <span id="toastMessage">Action completed successfully!</span>
-            </div>
-
-        </div>
-    </div><!-- /signatureMode -->
-
-    <!-- ===== ID CARD MODE ===== -->
-    <div id="idCardMode" style="display:none;" class="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-8">
-
-        <!-- ID Card Form Sidebar -->
-        <div class="lg:col-span-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col gap-5 h-fit">
-            <div class="border-b border-slate-100 pb-3">
-                <h2 class="font-brand font-bold text-slate-900 text-base flex items-center gap-2">
-                    <i class="fa-solid fa-id-card-clip brand-primary"></i> ID Card Fields
-                </h2>
-                <p class="text-xs text-slate-500 mt-0.5">Fill details and upload a photo. Preview updates live.</p>
-            </div>
-
-            <!-- Company Logo Upload -->
-            <div>
-                <label class="block text-xs font-semibold text-slate-700 mb-2">Company Logo</label>
-                <div id="idLogoUpload" class="id-photo-upload" onclick="document.getElementById('idLogoInput').click()">
-                    <input type="file" id="idLogoInput" accept="image/*" style="display:none;" onchange="handleIdLogo(event)">
-                    <div id="idLogoPlaceholder">
-                        <i class="fa-solid fa-image text-2xl text-slate-300 mb-1"></i>
-                        <p class="text-xs text-slate-500 font-medium">Click to upload logo</p>
+                    <div class="flex items-center justify-center gap-2 shrink-0">
+                        <button onclick="downloadAsPNG()"
+                            class="flex-1 sm:flex-none px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all border border-slate-700">
+                            <i class="fa-regular fa-image mr-1"></i> Save PNG
+                        </button>
+                        <button onclick="generateDOCX()"
+                            class="flex-1 sm:flex-none px-4 sm:px-5 py-2.5 button-primary font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-md flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-download text-sm"></i> Download .DOCX
+                        </button>
                     </div>
-                    <img id="idLogoPreview" style="display:none;max-height:80px;max-width:100%;border-radius:8px;object-fit:contain;" alt="Logo Preview">
                 </div>
-            </div>
 
-            <!-- Photo Upload -->
-            <div>
-                <label class="block text-xs font-semibold text-slate-700 mb-2">Employee Photo</label>
-                <div id="idPhotoUpload" class="id-photo-upload" onclick="document.getElementById('idPhotoInput').click()">
-                    <input type="file" id="idPhotoInput" accept="image/*" style="display:none;" onchange="handleIdPhoto(event)">
-                    <div id="idPhotoPlaceholder">
-                        <i class="fa-solid fa-cloud-arrow-up text-3xl text-slate-300 mb-2"></i>
-                        <p class="text-xs text-slate-500 font-medium">Click to upload photo</p>
-                        <p class="text-[10px] text-slate-400 mt-1">or use camera below</p>
-                    </div>
-                    <img id="idPhotoPreview" style="display:none;max-height:120px;border-radius:8px;" alt="Preview">
+                <!-- Notification Toast -->
+                <div id="toast"
+                    class="fixed bottom-6 right-6 bg-slate-900 text-white text-xs px-4 py-3 rounded-xl shadow-2xl transition-all duration-300 transform translate-y-20 opacity-0 flex items-center gap-2.5 z-50">
+                    <i id="toastIcon" class="fa-solid fa-check-circle text-emerald-400 text-base"></i>
+                    <span id="toastMessage">Action completed successfully!</span>
                 </div>
-                <div class="flex gap-2 mt-2">
-                    <button onclick="openCamera()" class="flex-1 text-xs font-semibold px-3 py-2 rounded-lg border border-slate-300 bg-slate-50 hover:bg-slate-100 text-slate-700 transition-colors">
-                        <i class="fa-solid fa-camera mr-1"></i> Camera
-                    </button>
-                    <button onclick="clearIdPhoto()" class="flex-1 text-xs font-semibold px-3 py-2 rounded-lg border border-red-200 bg-red-50 hover:bg-red-100 text-red-600 transition-colors">
-                        <i class="fa-solid fa-xmark mr-1"></i> Remove
-                    </button>
+
+            </div>
+        </div><!-- /signatureMode -->
+
+        <!-- ===== ID CARD MODE ===== -->
+        <div id="idCardMode" style="display:none;" class="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-8">
+
+            <!-- ID Card Form Sidebar -->
+            <div
+                class="lg:col-span-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col gap-5 h-fit">
+                <div class="border-b border-slate-100 pb-3">
+                    <h2 class="font-brand font-bold text-slate-900 text-base flex items-center gap-2">
+                        <i class="fa-solid fa-id-card-clip brand-primary"></i> ID Card Fields
+                    </h2>
+                    <p class="text-xs text-slate-500 mt-0.5">Fill details and upload a photo. Preview updates live.</p>
                 </div>
-            </div>
 
-            <!-- QR / Scanner Upload -->
-            <div>
-                <label class="block text-xs font-semibold text-slate-700 mb-2">QR / Scanner Code</label>
-                <label class="flex items-center gap-2 text-xs font-semibold bg-white border border-slate-300 rounded-lg py-2.5 px-3 hover:bg-slate-50 transition-colors cursor-pointer">
-                    <i class="fa-solid fa-upload text-slate-400"></i> <span>Choose QR Image (manual)</span>
-                    <input type="file" accept="image/*" class="hidden" onchange="handleQrUpload(event)">
-                </label>
-                <p class="text-[10px] text-slate-400 mt-1">Upload any QR code image you already generated.</p>
-            </div>
-
-            <!-- Footer Tagline -->
-            <div>
-                <label for="inputIdTagline" class="block text-xs font-semibold text-slate-700 mb-1">Footer Tagline</label>
-                <input type="text" id="inputIdTagline" value="INNOVATE | AUTOMATE | TRANSFORM" oninput="updateIdCardPreview()"
-                    class="w-full text-sm px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0A3D7A] bg-white">
-            </div>
-
-            <!-- Employee Details -->
-            <div class="space-y-3 bg-accent p-3.5 rounded-xl border border-slate-200">
-                <span class="text-xs font-bold brand-primary uppercase tracking-wider block">Employee Details</span>
+                <!-- Company Logo Upload -->
                 <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">Full Name</label>
-                    <input type="text" id="idNameInput" value="Uday Kumar C" oninput="updateIdCardPreview()"
+                    <label class="block text-xs font-semibold text-slate-700 mb-2">Company Logo</label>
+                    <div id="idLogoUpload" class="id-photo-upload"
+                        onclick="document.getElementById('idLogoInput').click()">
+                        <input type="file" id="idLogoInput" accept="image/*" style="display:none;"
+                            onchange="handleIdLogo(event)">
+                        <div id="idLogoPlaceholder">
+                            <i class="fa-solid fa-image text-2xl text-slate-300 mb-1"></i>
+                            <p class="text-xs text-slate-500 font-medium">Click to upload logo</p>
+                        </div>
+                        <img id="idLogoPreview"
+                            style="display:none;max-height:80px;max-width:100%;border-radius:8px;object-fit:contain;"
+                            alt="Logo Preview">
+                    </div>
+                </div>
+
+                <!-- Photo Upload -->
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-2">Employee Photo</label>
+                    <div id="idPhotoUpload" class="id-photo-upload"
+                        onclick="document.getElementById('idPhotoInput').click()">
+                        <input type="file" id="idPhotoInput" accept="image/*" style="display:none;"
+                            onchange="handleIdPhoto(event)">
+                        <div id="idPhotoPlaceholder">
+                            <i class="fa-solid fa-cloud-arrow-up text-3xl text-slate-300 mb-2"></i>
+                            <p class="text-xs text-slate-500 font-medium">Click to upload photo</p>
+                            <p class="text-[10px] text-slate-400 mt-1">or use camera below</p>
+                        </div>
+                        <img id="idPhotoPreview" style="display:none;max-height:120px;border-radius:8px;" alt="Preview">
+                    </div>
+                    <div class="flex gap-2 mt-2">
+                        <button onclick="openCamera()"
+                            class="flex-1 text-xs font-semibold px-3 py-2 rounded-lg border border-slate-300 bg-slate-50 hover:bg-slate-100 text-slate-700 transition-colors">
+                            <i class="fa-solid fa-camera mr-1"></i> Camera
+                        </button>
+                        <button onclick="clearIdPhoto()"
+                            class="flex-1 text-xs font-semibold px-3 py-2 rounded-lg border border-red-200 bg-red-50 hover:bg-red-100 text-red-600 transition-colors">
+                            <i class="fa-solid fa-xmark mr-1"></i> Remove
+                        </button>
+                    </div>
+                </div>
+
+                <!-- QR / Scanner Upload -->
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-2">QR / Scanner Code</label>
+                    <label
+                        class="flex items-center gap-2 text-xs font-semibold bg-white border border-slate-300 rounded-lg py-2.5 px-3 hover:bg-slate-50 transition-colors cursor-pointer">
+                        <i class="fa-solid fa-upload text-slate-400"></i> <span>Choose QR Image (manual)</span>
+                        <input type="file" accept="image/*" class="hidden" onchange="handleQrUpload(event)">
+                    </label>
+                    <p class="text-[10px] text-slate-400 mt-1">Upload any QR code image you already generated.</p>
+                </div>
+
+                <!-- Footer Tagline -->
+                <div>
+                    <label for="inputIdTagline" class="block text-xs font-semibold text-slate-700 mb-1">Footer
+                        Tagline</label>
+                    <input type="text" id="inputIdTagline" value="INNOVATE | AUTOMATE | TRANSFORM"
+                        oninput="updateIdCardPreview()"
                         class="w-full text-sm px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0A3D7A] bg-white">
                 </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">Designation</label>
-                    <input type="text" id="idDesignationInput" value="Managing Director & CEO" oninput="updateIdCardPreview()"
-                        class="w-full text-sm px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0A3D7A] bg-white">
+
+                <!-- Employee Details -->
+                <div class="space-y-3 bg-accent p-3.5 rounded-xl border border-slate-200">
+                    <span class="text-xs font-bold brand-primary uppercase tracking-wider block">Employee Details</span>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Full Name</label>
+                        <input type="text" id="idNameInput" value="Uday Kumar C" oninput="updateIdCardPreview()"
+                            class="w-full text-sm px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0A3D7A] bg-white">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Designation</label>
+                        <input type="text" id="idDesignationInput" value="Managing Director & CEO"
+                            oninput="updateIdCardPreview()"
+                            class="w-full text-sm px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0A3D7A] bg-white">
+                    </div>
+                </div>
+
+                <!-- Export Buttons -->
+                <div class="flex gap-2 pt-2 border-t border-slate-100">
+                    <button onclick="downloadIdCardPNG()"
+                        class="flex-1 px-4 py-2.5 button-primary font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-md flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-download"></i> Export ID Card PNG
+                    </button>
                 </div>
             </div>
 
-            <!-- Export Buttons -->
-            <div class="flex gap-2 pt-2 border-t border-slate-100">
-                <button onclick="downloadIdCardPNG()" class="flex-1 px-4 py-2.5 button-primary font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-md flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-download"></i> Export ID Card PNG
-                </button>
-            </div>
-        </div>
-
-        <!-- ID Card Preview Area -->
-        <div class="lg:col-span-8 flex flex-col gap-4">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center gap-2">
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-800">
-                        <span class="w-1.5 h-1.5 mr-1.5 rounded-full bg-blue-500 animate-pulse"></span> Live Preview
-                    </span>
-                    <span id="idActiveBrandLabel" class="text-xs text-slate-500 hidden sm:inline">OneBridge Employee ID Card</span>
+            <!-- ID Card Preview Area -->
+            <div class="lg:col-span-8 flex flex-col gap-4">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <span
+                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-800">
+                            <span class="w-1.5 h-1.5 mr-1.5 rounded-full bg-blue-500 animate-pulse"></span> Live Preview
+                        </span>
+                        <span id="idActiveBrandLabel" class="text-xs text-slate-500 hidden sm:inline">OneBridge Employee
+                            ID Card</span>
+                    </div>
+                    <div class="text-xs text-slate-400 font-mono hidden sm:block">Portrait ID Card</div>
                 </div>
-                <div class="text-xs text-slate-400 font-mono hidden sm:block">Portrait ID Card</div>
-            </div>
 
-            <!-- ID Card Preview -->
-            <div class="flex items-center justify-center p-6 sm:p-10" style="background:linear-gradient(135deg,#f8fafc,#e2e8f0);border-radius:16px;min-height:580px;">
-                    <div id="idCardPreview" class="id-card-wrapper" style="--idc-primary:#f37021; --idc-dark:#111827;">
+                <!-- ID Card Preview -->
+                <div class="flex items-center justify-center p-6 sm:p-10"
+                    style="background:linear-gradient(135deg,#f8fafc,#e2e8f0);border-radius:16px;min-height:580px;">
+                    <div id="idCardPreview" class="id-card-wrapper" style="--idc-primary:#f97316; --idc-dark:#334155;">
 
                         <!-- SVG Layer: Side Ribbons, Charcoal Wings, Skyline Vector & Orange Border Contour -->
-                        <svg class="id-card-bg-layer" viewBox="0 0 640 1010" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                        <svg class="id-card-bg-layer" viewBox="0 0 640 1010" preserveAspectRatio="none"
+                            xmlns="http://www.w3.org/2000/svg">
                             <defs>
-                                <pattern id="dotPattern" x="0" y="0" width="22" height="22" patternUnits="userSpaceOnUse">
+                                <pattern id="dotPattern" x="0" y="0" width="22" height="22"
+                                    patternUnits="userSpaceOnUse">
                                     <circle cx="6" cy="6" r="2.8" fill="var(--idc-primary)" opacity="0.75" />
                                 </pattern>
                                 <linearGradient id="skylineFade" x1="0" y1="1" x2="0" y2="0">
@@ -854,24 +993,35 @@
                                 <circle cx="720" cy="-40" r="140" />
                                 <circle cx="720" cy="-40" r="80" />
                             </g>
-                            <path d="M 0,280 L 115,370 L 115,640 L 220,830 L 220,950 L 0,950 Z" fill="var(--idc-dark)" />
-                            <path d="M 640,280 L 525,370 L 525,640 L 420,830 L 420,950 L 640,950 Z" fill="var(--idc-dark)" />
+                            <path d="M 0,280 L 115,370 L 115,640 L 220,830 L 220,950 L 0,950 Z"
+                                fill="var(--idc-dark)" />
+                            <path d="M 640,280 L 525,370 L 525,640 L 420,830 L 420,950 L 640,950 Z"
+                                fill="var(--idc-dark)" />
                             <g stroke="url(#skylineFade)" stroke-width="2" fill="none">
-                                <path d="M 15,950 V 710 H 35 V 950 M 40,950 V 680 H 65 V 950 M 70,950 V 740 H 90 V 950 M 95,950 V 780 H 115 V 950" />
-                                <path d="M 20,720 H 30 M 20,740 H 30 M 20,760 H 30 M 45,695 H 60 M 45,715 H 60 M 45,735 H 60 M 45,755 H 60" />
-                                <path d="M 525,950 V 780 H 545 V 950 M 550,950 V 680 H 575 V 950 M 580,950 V 710 H 600 V 950 M 605,950 V 740 H 625 V 950" />
-                                <path d="M 555,695 H 570 M 555,715 H 570 M 555,735 H 570 M 585,720 H 595 M 585,740 H 595" />
+                                <path
+                                    d="M 15,950 V 710 H 35 V 950 M 40,950 V 680 H 65 V 950 M 70,950 V 740 H 90 V 950 M 95,950 V 780 H 115 V 950" />
+                                <path
+                                    d="M 20,720 H 30 M 20,740 H 30 M 20,760 H 30 M 45,695 H 60 M 45,715 H 60 M 45,735 H 60 M 45,755 H 60" />
+                                <path
+                                    d="M 525,950 V 780 H 545 V 950 M 550,950 V 680 H 575 V 950 M 580,950 V 710 H 600 V 950 M 605,950 V 740 H 625 V 950" />
+                                <path
+                                    d="M 555,695 H 570 M 555,715 H 570 M 555,735 H 570 M 585,720 H 595 M 585,740 H 595" />
                             </g>
                             <path d="M 0,280 L 115,370 L 92,430 L 0,350 Z" fill="var(--idc-primary)" />
                             <path d="M 0,350 L 92,430 L 0,660 Z" fill="var(--idc-primary)" opacity="0.85" />
                             <path d="M 640,280 L 525,370 L 548,430 L 640,350 Z" fill="var(--idc-primary)" />
                             <path d="M 640,350 L 548,430 L 640,660 Z" fill="var(--idc-primary)" opacity="0.85" />
-                            <path d="M 0,280 L 115,370 L 115,640 L 220,830 L 220,950 L 420,950 L 420,830 L 525,640 L 525,370 L 640,280" fill="none" stroke="var(--idc-primary)" stroke-width="22" stroke-linejoin="round" stroke-linecap="round" />
+                            <path
+                                d="M 0,280 L 115,370 L 115,640 L 220,830 L 220,950 L 420,950 L 420,830 L 525,640 L 525,370 L 640,280"
+                                fill="none" stroke="var(--idc-primary)" stroke-width="22" stroke-linejoin="round"
+                                stroke-linecap="round" />
                             <rect x="0" y="942" width="640" height="68" fill="var(--idc-primary)" />
                         </svg>
 
                         <!-- Lanyard Slot -->
-                        <div style="position:absolute; top:18px; left:50%; transform:translateX(-50%); width:84px; height:15px; background:#94a3b8; border-radius:10px; z-index:10; box-shadow:inset 0 2px 4px rgba(0,0,0,0.4);"></div>
+                        <div
+                            style="position:absolute; top:18px; left:50%; transform:translateX(-50%); width:84px; height:15px; background:#94a3b8; border-radius:10px; z-index:10; box-shadow:inset 0 2px 4px rgba(0,0,0,0.4);">
+                        </div>
 
                         <!-- Main Content Column -->
                         <div style="
@@ -885,59 +1035,56 @@ padding:30px 18px 0;
 height:calc(100% - 60px);
 box-sizing:border-box;
 ">
-                            <div id="idLogoWrap"
-    style="
-        height:140px;
-        width:260px;
+                            <div id="idLogoWrap" style="
+        height:90px;
+        width:200px;
         display:flex;
         align-items:center;
         justify-content:center;
-        margin:8px auto 10px;
-        background:#ffffff;
-        border-radius:18px;
+        margin:10px auto 5px;
+        background:transparent;
         position:relative;
         z-index:20;
     ">
-</div>
-                            <div id="idBrandName" class="font-brand" style="font-weight:800; font-size:22px; letter-spacing:-0.02em; white-space:nowrap; margin-bottom:14px;">
-                                <span style="color:var(--idc-primary);">Onebridge</span> <span style="color:#111827;">Infotech</span>
+                            </div>
+                            <div id="idBrandName" class="font-brand"
+                                style="font-weight:800; font-size:20px; letter-spacing:-0.02em; white-space:nowrap; margin-bottom:15px;">
+                                <span style="color:var(--idc-primary);">Onebridge</span> <span
+                                    style="color:#111827;">Infotech</span>
                             </div>
                             <div style="
-    width:120px;
-    height:120px;
-    margin:20px auto;
-    padding:8px;
-    border:8px solid var(--idc-primary);
+    width:140px;
+    height:140px;
+    margin:0 auto 5px;
+    padding:4px;
+    border:6px solid var(--idc-primary);
     border-radius:50%;
     background:#ffffff;
     position:relative;
     overflow:hidden;
     flex-shrink:0;
-    box-shadow:0 12px 30px rgba(0,0,0,.20);
+    box-shadow:0 12px 24px rgba(0,0,0,.15);
 ">
 
-   <img id="idPhotoImg"
-     style="
+                                <img id="idPhotoImg" style="
         position:absolute;
-        top:6px;
-        left:6px;
-        width:calc(100% - 12px);
-        height:calc(100% - 12px);
+        top:4px;
+        left:4px;
+        width:calc(100% - 8px);
+        height:calc(100% - 8px);
         border-radius:50%;
         object-fit:cover;
         object-position:center top;
         display:none;
         z-index:2;
-     "
-     alt="ID Photo">
+     " alt="ID Photo">
 
-    <div id="idPhotoPlaceholderCard"
-        style="
+                                <div id="idPhotoPlaceholderCard" style="
             position:absolute;
-            top:8px;
-            left:8px;
-            width:calc(100% - 16px);
-            height:calc(100% - 16px);
+            top:4px;
+            left:4px;
+            width:calc(100% - 8px);
+            height:calc(100% - 8px);
             border-radius:50%;
             display:flex;
             align-items:center;
@@ -945,29 +1092,31 @@ box-sizing:border-box;
             background:#f8fafc;
             z-index:1;
         ">
-        <i class="fa-solid fa-user"
-           style="font-size:72px;color:#cbd5e1;"></i>
-    </div>
+                                    <i class="fa-solid fa-user" style="font-size:60px;color:#cbd5e1;"></i>
+                                </div>
 
-</div>
-                            <h3 id="idName" class="font-brand" style="margin-top:8px; font-weight:800; font-size:15px; line-height:1.1;margin-bottom: 4px; text-align:center; padding:0 12px; color:#0f172a;">Uday Kumar C</h3>
-                            <div style="width:42px; height:4px; border-radius:3px; background:var(--idc-primary); margin:8px 0 6px 0;"></div>
-                           <p id="idDesignation"
-style="
-    font-size:9px;
+                            </div>
+                            <h3 id="idName" class="font-brand"
+                                style="margin-top:5px; font-weight:800; font-size:24px; line-height:1.1;margin-bottom: 2px; text-align:center; padding:0 12px; color:#0f172a;">
+                                Uday Kumar C</h3>
+                            <div
+                                style="width:50px; height:3px; border-radius:2px; background:var(--idc-primary); margin:6px 0 6px 0;">
+                            </div>
+                            <p id="idDesignation" style="
+    font-size:11px;
     font-weight:600;
     color:#334155;
     line-height:1.2;
     text-align:center;
-    max-width:250px;
-    margin:2px auto 10px;
+    max-width:200px;
+    margin:0 auto 10px;
     word-wrap:break-word;
 ">
-    Managing Director &amp; CEO
-</p>
-                           <!-- QR Code -->
-<div style="
-margin-top:16px;
+                                Managing Director &amp; CEO
+                            </p>
+                            <!-- QR Code -->
+                            <div style="
+margin-top:5px;
 display:flex;
 justify-content:center;
 align-items:center;
@@ -976,70 +1125,77 @@ z-index:20;
 flex-shrink:0;
 ">
 
-    <div style="
-    width:96px;
-    height:96px;
-    padding:8px;
+                                <div style="
+    width:90px;
+    height:90px;
+    padding:6px;
     background:#fff;
-    border-radius:18px;
-    border:1px solid #d1d5db;
-    box-shadow:0 10px 20px rgba(0,0,0,.15);
+    border-radius:10px;
+    border:1px solid #e2e8f0;
+    box-shadow:0 8px 16px rgba(0,0,0,.1);
     ">
 
-        <img id="idQrImg"
-             style="width:100%;height:100%;object-fit:contain;display:none;"
-             alt="QR Code">
+                                    <img id="idQrImg" style="width:100%;height:100%;object-fit:contain;display:none;"
+                                        alt="QR Code">
 
-        <i id="idQrPlaceholderCard"
-           class="fa-solid fa-qrcode text-slate-300"
-           style="font-size:48px;line-height:80px;width:100%;text-align:center;"></i>
+                                    <i id="idQrPlaceholderCard" class="fa-solid fa-qrcode text-slate-300"
+                                        style="font-size:42px;line-height:78px;width:100%;text-align:center;"></i>
 
-    </div>
+                                </div>
 
-</div>
+                            </div>
 
-<!-- Footer -->
-<div style="
+                        </div> <!-- Close Main Content Column -->
+
+                        <!-- Footer -->
+                        <div style="
     position:absolute;
     left:0;
     right:0;
     bottom:0;
-    height:46px;
+    height:36px;
     display:flex;
     align-items:center;
     justify-content:center;
     z-index:30;
+    padding-bottom: 4px;
 ">
-    <span id="idTagline"
-          style="
+                            <span id="idTagline" style="
             color:#ffffff;
-            font-size:11px;
-            font-weight:800;
-            letter-spacing:.14em;
+            font-size:10px;
+            font-weight:600;
+            letter-spacing:0.12em;
             text-transform:uppercase;
             white-space:nowrap;
           ">
-        INNOVATE &nbsp; | &nbsp; AUTOMATE &nbsp; | &nbsp; TRANSFORM
-    </span>
-</div>
+                                INNOVATE &nbsp; | &nbsp; AUTOMATE &nbsp; | &nbsp; TRANSFORM
+                            </span>
+                        </div>
 
-            <!-- Info Banner -->
-            <div class="bg-slate-900 text-white p-4 sm:p-5 rounded-2xl flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
-                <div class="space-y-0.5 text-center sm:text-left">
-                    <h4 class="font-brand font-bold text-sm flex items-center justify-center sm:justify-start gap-2">
-                        <i class="fa-solid fa-id-card brand-primary"></i> Corporate ID Card Generator
-                    </h4>
-                    <p class="text-xs text-slate-400 hidden sm:block">Upload employee photo, fill details, and export as high-res PNG. Switch companies using the dropdown above.</p>
-                </div>
-                <div class="flex items-center justify-center gap-2 shrink-0">
-                    <button onclick="downloadIdCardPNG()" class="flex-1 sm:flex-none px-4 sm:px-5 py-2.5 button-primary font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-md flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-download text-sm"></i> Export PNG
-                    </button>
+                    </div> <!-- Close idCardPreview -->
+                </div> <!-- Close preview wrapper -->
+
+                <!-- Info Banner -->
+                <div
+                    class="bg-slate-900 text-white p-4 sm:p-5 rounded-2xl flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+                    <div class="space-y-0.5 text-center sm:text-left">
+                        <h4
+                            class="font-brand font-bold text-sm flex items-center justify-center sm:justify-start gap-2">
+                            <i class="fa-solid fa-id-card brand-primary"></i> Corporate ID Card Generator
+                        </h4>
+                        <p class="text-xs text-slate-400 hidden sm:block">Upload employee photo, fill details, and
+                            export as high-res PNG. Switch companies using the dropdown above.</p>
+                    </div>
+                    <div class="flex items-center justify-center gap-2 shrink-0">
+                        <button onclick="downloadIdCardPNG()"
+                            class="flex-1 sm:flex-none px-4 sm:px-5 py-2.5 button-primary font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-md flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-download text-sm"></i> Export PNG
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
 
-    </div><!-- /idCardMode -->
+        </div><!-- /idCardMode -->
 
     </main>
 
@@ -1057,18 +1213,18 @@ flex-shrink:0;
                 addressDefault: '#202, Sathyabama Complex, Bhagyanagar Colony, KPHB, Hyderabad, Telangana 500072',
                 qrTitle: 'Scan to Visit',
                 qrSubtitle: 'Our Website',
-                primaryColor: '#f37021',
-                secondaryColor: '#202020',
+                primaryColor: '#f97316',
+                secondaryColor: '#334155',
                 accentBg: '#FFF3EB',
                 buttonHover: '#ea580c',
                 filePrefix: 'OneBridge',
-                logoHeight:200,
+                logoHeight: 200,
                 headerTitle: 'OneBridge Template Generator',
                 headerSubtitle: 'Live Editor \u2022 DOCX Exporter \u2022 HTML Signature',
-                idcardDark: '#111827',
+                idcardDark: '#334155',
                 idTaglineDefault: 'INNOVATE   |   AUTOMATE   |   TRANSFORM',
-                idBrandHTML: '<span style="color:var(--idc-primary);">Onebridge</span> <span style="color:#111827;">Infotech</span>',
-                idLogoSVG: '<svg width="90" height="70" viewBox="0 0 120 96" xmlns="http://www.w3.org/2000/svg"><path d="M6,74 Q32,20 58,74 Z" fill="#f37021"/><path d="M40,74 Q66,32 94,74 Z" fill="#111827"/><circle cx="95" cy="20" r="10" fill="#f37021"/><text x="107" y="14" font-size="9" font-family="Arial" fill="#111827" font-weight="700">\u00AE</text></svg>'
+                idBrandHTML: '<span style="color:var(--idc-primary);">Onebridge</span> <span style="color:#334155;">Infotech</span>',
+                idLogoSVG: '<svg width="150" height="130" viewBox="0 0 120 96" xmlns="http://www.w3.org/2000/svg"><path d="M6,74 Q32,20 58,74 Z" fill="#f97316"/><path d="M40,74 Q66,32 94,74 Z" fill="#334155"/><circle cx="95" cy="20" r="10" fill="#f97316"/><text x="107" y="14" font-size="9" font-family="Arial" fill="#334155" font-weight="700">\u00AE</text></svg>'
             },
             golive: {
                 label: 'GoLive Classes',
@@ -1143,7 +1299,7 @@ flex-shrink:0;
             updateIdCardPreview();
         }
 
-        window.addEventListener('DOMContentLoaded', function() {
+        window.addEventListener('DOMContentLoaded', function () {
             setCompany('golive');
         });
 
@@ -1198,7 +1354,7 @@ flex-shrink:0;
                 : "fa-solid fa-triangle-exclamation text-amber-400 text-base";
             toast.classList.remove('translate-y-20', 'opacity-0');
             toast.classList.add('translate-y-0', 'opacity-100');
-            setTimeout(function() {
+            setTimeout(function () {
                 toast.classList.remove('translate-y-0', 'opacity-100');
                 toast.classList.add('translate-y-20', 'opacity-0');
             }, 3200);
@@ -1224,7 +1380,7 @@ flex-shrink:0;
             showToast('Rendering PNG image...');
             var cardId = (selectedCompany === 'golive') ? 'goliveCard' : 'onebridgeCard';
             var card = document.getElementById(cardId);
-            html2canvas(card, { scale: 3, useCORS: true, backgroundColor: '#ffffff' }).then(function(canvas) {
+            html2canvas(card, { scale: 3, useCORS: true, backgroundColor: '#ffffff' }).then(function (canvas) {
                 var link = document.createElement('a');
                 var name = document.getElementById('inputName').value || 'Avala_Vinay';
                 var config = COMPANY_CONFIG[selectedCompany];
@@ -1232,7 +1388,7 @@ flex-shrink:0;
                 link.href = canvas.toDataURL('image/png');
                 link.click();
                 showToast('PNG image downloaded!');
-            }).catch(function(err) {
+            }).catch(function (err) {
                 console.error(err);
                 showToast('Failed to export PNG.', false);
             });
@@ -1247,10 +1403,10 @@ flex-shrink:0;
         }
 
         function loadImageAsUint8Array(url, width, height) {
-            return new Promise(function(resolve, reject) {
+            return new Promise(function (resolve, reject) {
                 var img = new Image();
                 img.crossOrigin = 'anonymous';
-                img.onload = function() {
+                img.onload = function () {
                     var canvas = document.createElement('canvas');
                     canvas.width = width; canvas.height = height;
                     var ctx = canvas.getContext('2d');
@@ -1258,7 +1414,7 @@ flex-shrink:0;
                     ctx.drawImage(img, 0, 0, width, height);
                     resolve(dataURLToUint8Array(canvas.toDataURL('image/png')));
                 };
-                img.onerror = function() { reject(new Error('Failed to load image: ' + url)); };
+                img.onerror = function () { reject(new Error('Failed to load image: ' + url)); };
                 img.src = url;
             });
         }
@@ -1301,40 +1457,50 @@ flex-shrink:0;
                                     insideVertical: { style: docxObj.BorderStyle.SINGLE, size: 4, color: "E5E7EB" },
                                 },
                                 rows: [
-                                    new docxObj.TableRow({ children: [
-                                        new docxObj.TableCell({ width: { size: 34, type: docxObj.WidthType.PERCENTAGE }, margins: { top:160, bottom:160, left:160, right:160 },
-                                            children: [
-                                                new docxObj.Paragraph({ alignment: docxObj.AlignmentType.CENTER, children: [new docxObj.ImageRun({ data: logoPngBytes, transformation: { width: logoW, height: logoH } })], space: { after: 120 } }),
-                                                new docxObj.Paragraph({ alignment: docxObj.AlignmentType.CENTER, children: [new docxObj.TextRun({ text: config.label, bold: true, size: 26, color: config.primaryColor.replace('#',''), font:"Arial" })] }),
-                                                new docxObj.Paragraph({ alignment: docxObj.AlignmentType.CENTER, children: [new docxObj.TextRun({ text: '\u2014 ' + config.brandSuffix + ' \u2014', bold: true, size: 13, color: config.secondaryColor.replace('#',''), font:"Arial" })], space: { after: 120 } }),
-                                                new docxObj.Paragraph({ alignment: docxObj.AlignmentType.CENTER, children: [new docxObj.TextRun({ text: config.sloganDefault, size: 16, color: config.secondaryColor.replace('#',''), font:"Arial" })] }),
-                                            ]
-                                        }),
-                                        new docxObj.TableCell({ width: { size: 42, type: docxObj.WidthType.PERCENTAGE }, margins: { top:160, bottom:160, left:200, right:160 },
-                                            children: [
-                                                new docxObj.Paragraph({ children: [new docxObj.TextRun({ text: name, bold: true, size: 28, color:"111827", font:"Arial" })] }),
-                                                new docxObj.Paragraph({ children: [new docxObj.TextRun({ text: designation, bold: true, size: 20, color: config.primaryColor.replace('#',''), font:"Arial" })], space: { after: 120 } }),
-                                                new docxObj.Paragraph({ children: [new docxObj.TextRun({ text:"\u2709  ", size:18 }), new docxObj.TextRun({ text: email, size:17, color: config.secondaryColor.replace('#',''), font:"Arial" })], space: { after: 60 } }),
-                                                new docxObj.Paragraph({ children: [new docxObj.TextRun({ text:"\uD83D\uDCDE  ", size:18 }), new docxObj.TextRun({ text: phone, size:17, color: config.secondaryColor.replace('#',''), font:"Arial" })], space: { after: 60 } }),
-                                                new docxObj.Paragraph({ children: [new docxObj.TextRun({ text:"\uD83C\uDF10  ", size:18 }), new docxObj.TextRun({ text: website, size:17, color: config.secondaryColor.replace('#',''), font:"Arial" })], space: { after: 60 } }),
-                                                new docxObj.Paragraph({ children: [new docxObj.TextRun({ text:"\uD83D\uDCCD  ", size:18 }), new docxObj.TextRun({ text: address, size:16, color: config.secondaryColor.replace('#',''), font:"Arial" })] }),
-                                            ]
-                                        }),
-                                        new docxObj.TableCell({ width: { size: 24, type: docxObj.WidthType.PERCENTAGE }, margins: { top:160, bottom:160, left:120, right:120 },
-                                            children: [
-                                                new docxObj.Paragraph({ alignment: docxObj.AlignmentType.CENTER, children: [new docxObj.ImageRun({ data: qrPngBytes, transformation: { width: 95, height: 95 } })], space: { after: 100 } }),
-                                                new docxObj.Paragraph({ alignment: docxObj.AlignmentType.CENTER, children: [new docxObj.TextRun({ text: config.qrTitle + "\n", size:15, color:"4B5563", font:"Arial" }), new docxObj.TextRun({ text: config.qrSubtitle, bold:true, size:15, color:"111827", font:"Arial" })] }),
-                                            ]
-                                        }),
-                                    ]}),
-                                    new docxObj.TableRow({ children: [
-                                        new docxObj.TableCell({ columnSpan: 3, margins: { top:120, bottom:120, left:160, right:160 },
-                                            children: [new docxObj.Paragraph({ children: [
-                                                new docxObj.TextRun({ text:"\uD83D\uDEE1 CONFIDENTIALITY NOTICE: ", bold:true, size:15, color: config.primaryColor.replace('#',''), font:"Arial" }),
-                                                new docxObj.TextRun({ text:"This email and any attachments are confidential and intended solely for the named recipient. If you received this email in error, please notify the sender and delete it.", size:14, color:"6B7280", font:"Arial" })
-                                            ]})]
-                                        })
-                                    ]}),
+                                    new docxObj.TableRow({
+                                        children: [
+                                            new docxObj.TableCell({
+                                                width: { size: 34, type: docxObj.WidthType.PERCENTAGE }, margins: { top: 160, bottom: 160, left: 160, right: 160 },
+                                                children: [
+                                                    new docxObj.Paragraph({ alignment: docxObj.AlignmentType.CENTER, children: [new docxObj.ImageRun({ data: logoPngBytes, transformation: { width: logoW, height: logoH } })], space: { after: 120 } }),
+                                                    new docxObj.Paragraph({ alignment: docxObj.AlignmentType.CENTER, children: [new docxObj.TextRun({ text: config.label, bold: true, size: 26, color: config.primaryColor.replace('#', ''), font: "Arial" })] }),
+                                                    new docxObj.Paragraph({ alignment: docxObj.AlignmentType.CENTER, children: [new docxObj.TextRun({ text: '\u2014 ' + config.brandSuffix + ' \u2014', bold: true, size: 13, color: config.secondaryColor.replace('#', ''), font: "Arial" })], space: { after: 120 } }),
+                                                    new docxObj.Paragraph({ alignment: docxObj.AlignmentType.CENTER, children: [new docxObj.TextRun({ text: config.sloganDefault, size: 16, color: config.secondaryColor.replace('#', ''), font: "Arial" })] }),
+                                                ]
+                                            }),
+                                            new docxObj.TableCell({
+                                                width: { size: 42, type: docxObj.WidthType.PERCENTAGE }, margins: { top: 160, bottom: 160, left: 200, right: 160 },
+                                                children: [
+                                                    new docxObj.Paragraph({ children: [new docxObj.TextRun({ text: name, bold: true, size: 28, color: "111827", font: "Arial" })] }),
+                                                    new docxObj.Paragraph({ children: [new docxObj.TextRun({ text: designation, bold: true, size: 20, color: config.primaryColor.replace('#', ''), font: "Arial" })], space: { after: 120 } }),
+                                                    new docxObj.Paragraph({ children: [new docxObj.TextRun({ text: "\u2709  ", size: 18 }), new docxObj.TextRun({ text: email, size: 17, color: config.secondaryColor.replace('#', ''), font: "Arial" })], space: { after: 60 } }),
+                                                    new docxObj.Paragraph({ children: [new docxObj.TextRun({ text: "\uD83D\uDCDE  ", size: 18 }), new docxObj.TextRun({ text: phone, size: 17, color: config.secondaryColor.replace('#', ''), font: "Arial" })], space: { after: 60 } }),
+                                                    new docxObj.Paragraph({ children: [new docxObj.TextRun({ text: "\uD83C\uDF10  ", size: 18 }), new docxObj.TextRun({ text: website, size: 17, color: config.secondaryColor.replace('#', ''), font: "Arial" })], space: { after: 60 } }),
+                                                    new docxObj.Paragraph({ children: [new docxObj.TextRun({ text: "\uD83D\uDCCD  ", size: 18 }), new docxObj.TextRun({ text: address, size: 16, color: config.secondaryColor.replace('#', ''), font: "Arial" })] }),
+                                                ]
+                                            }),
+                                            new docxObj.TableCell({
+                                                width: { size: 24, type: docxObj.WidthType.PERCENTAGE }, margins: { top: 160, bottom: 160, left: 120, right: 120 },
+                                                children: [
+                                                    new docxObj.Paragraph({ alignment: docxObj.AlignmentType.CENTER, children: [new docxObj.ImageRun({ data: qrPngBytes, transformation: { width: 95, height: 95 } })], space: { after: 100 } }),
+                                                    new docxObj.Paragraph({ alignment: docxObj.AlignmentType.CENTER, children: [new docxObj.TextRun({ text: config.qrTitle + "\n", size: 15, color: "4B5563", font: "Arial" }), new docxObj.TextRun({ text: config.qrSubtitle, bold: true, size: 15, color: "111827", font: "Arial" })] }),
+                                                ]
+                                            }),
+                                        ]
+                                    }),
+                                    new docxObj.TableRow({
+                                        children: [
+                                            new docxObj.TableCell({
+                                                columnSpan: 3, margins: { top: 120, bottom: 120, left: 160, right: 160 },
+                                                children: [new docxObj.Paragraph({
+                                                    children: [
+                                                        new docxObj.TextRun({ text: "\uD83D\uDEE1 CONFIDENTIALITY NOTICE: ", bold: true, size: 15, color: config.primaryColor.replace('#', ''), font: "Arial" }),
+                                                        new docxObj.TextRun({ text: "This email and any attachments are confidential and intended solely for the named recipient. If you received this email in error, please notify the sender and delete it.", size: 14, color: "6B7280", font: "Arial" })
+                                                    ]
+                                                })]
+                                            })
+                                        ]
+                                    }),
                                 ]
                             })
                         ]
@@ -1365,7 +1531,7 @@ flex-shrink:0;
             var file = e.target.files[0];
             if (!file) return;
             var reader = new FileReader();
-            reader.onload = function(ev) {
+            reader.onload = function (ev) {
                 var dataUrl = ev.target.result;
                 document.getElementById('idLogoPreview').src = dataUrl;
                 document.getElementById('idLogoPreview').style.display = 'block';
@@ -1380,7 +1546,7 @@ flex-shrink:0;
             var file = e.target.files[0];
             if (!file) return;
             var reader = new FileReader();
-            reader.onload = function(ev) {
+            reader.onload = function (ev) {
                 idPhotoDataUrl = ev.target.result;
                 document.getElementById('idPhotoPreview').src = idPhotoDataUrl;
                 document.getElementById('idPhotoPreview').style.display = 'block';
@@ -1415,16 +1581,16 @@ flex-shrink:0;
             document.body.appendChild(overlay);
 
             navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } } })
-                .then(function(stream) {
+                .then(function (stream) {
                     cameraStream = stream;
                     document.getElementById('cameraVideo').srcObject = stream;
                 })
-                .catch(function() {
+                .catch(function () {
                     showToast('Camera access denied. Please upload a file instead.', false);
                     overlay.remove();
                 });
 
-            document.getElementById('captureBtn').onclick = function() {
+            document.getElementById('captureBtn').onclick = function () {
                 var video = document.getElementById('cameraVideo');
                 var canvas = document.getElementById('cameraCanvas');
                 canvas.width = video.videoWidth;
@@ -1449,7 +1615,7 @@ flex-shrink:0;
 
         function closeCamera() {
             if (cameraStream) {
-                cameraStream.getTracks().forEach(function(t) { t.stop(); });
+                cameraStream.getTracks().forEach(function (t) { t.stop(); });
                 cameraStream = null;
             }
             var overlay = document.getElementById('cameraOverlay');
@@ -1460,7 +1626,7 @@ flex-shrink:0;
             var file = e.target.files[0];
             if (!file) return;
             var reader = new FileReader();
-            reader.onload = function(ev) {
+            reader.onload = function (ev) {
                 var qrImg = document.getElementById('idQrImg');
                 var qrIcon = document.getElementById('idQrPlaceholderCard');
                 qrImg.src = ev.target.result;
@@ -1501,7 +1667,7 @@ flex-shrink:0;
         function downloadIdCardPNG() {
             showToast('Rendering ID Card PNG...');
             var card = document.getElementById('idCardPreview');
-            html2canvas(card, { scale: 4, useCORS: true, backgroundColor: '#f8fafc' }).then(function(canvas) {
+            html2canvas(card, { scale: 4, useCORS: true, backgroundColor: '#f8fafc' }).then(function (canvas) {
                 var link = document.createElement('a');
                 var name = document.getElementById('inputName').value || 'Employee';
                 var config = COMPANY_CONFIG[selectedCompany];
@@ -1509,7 +1675,7 @@ flex-shrink:0;
                 link.href = canvas.toDataURL('image/png');
                 link.click();
                 showToast('ID Card PNG downloaded!');
-            }).catch(function(err) {
+            }).catch(function (err) {
                 console.error(err);
                 showToast('Failed to export ID Card PNG.', false);
             });
